@@ -1,5 +1,7 @@
+import ArticleItemDetailed from '../components/ArticleItemDetailed';
+
 const PostPage = () => {
-  return <div></div>;
+  return <ArticleItemDetailed />;
 };
 
 export default PostPage;

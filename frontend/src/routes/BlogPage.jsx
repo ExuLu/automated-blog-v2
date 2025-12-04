@@ -1,5 +1,7 @@
+import ArticleList from '../components/ArticleList';
+
 const BlogPage = () => {
-  return <div></div>;
+  return <ArticleList />;
 };
 
 export default BlogPage;

@@ -1,4 +1,4 @@
-const ArticleItem = ({ post }) => {
+const ArticleListItem = ({ post }) => {
   return (
     <div>
       <h2>{post.name}</h2>
@@ -9,4 +9,4 @@ const ArticleItem = ({ post }) => {
   );
 };
 
-export default ArticleItem;
+export default ArticleListItem;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ArticleItem from '../components/ArticleItem';
+import ArticleListItem from './ArticleListItem';
 import mockPosts from '../mockPosts';
 
 const ArticleList = () => {
@@ -10,7 +10,7 @@ const ArticleList = () => {
       <h1>Automatate Blog</h1>
       <div>
         {posts.map((post) => (
-          <ArticleItem post={post} />
+          <ArticleListItem post={post} />
         ))}
       </div>
     </div>
