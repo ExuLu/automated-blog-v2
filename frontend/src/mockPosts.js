@@ -12,7 +12,7 @@ const mockPosts = [
 
 `,
     name: 'Lorem Ipsum',
-    date: new Date(Date.now()).toString(),
+    date: new Date(Date.now()).toLocaleString(),
     id: 2,
   },
   {
@@ -20,7 +20,7 @@ const mockPosts = [
 
 `,
     name: 'Lorem Ipsum',
-    date: new Date(Date.now()).toString(),
+    date: new Date(Date.now()).toLocaleString(),
     id: 3,
   },
 ];
