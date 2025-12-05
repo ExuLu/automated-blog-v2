@@ -10,6 +10,9 @@ exports.getAllArticles = (req, res) => {
   try {
     res.status(200).json({
       status: 'success',
+      data: {
+        articles,
+      },
     });
   } catch (err) {
     res.status(500).json({
@@ -19,9 +22,21 @@ exports.getAllArticles = (req, res) => {
 };
 
 exports.getArticleById = (req, res) => {
+  const article = articles.find((art) => art.id === req.params.id);
+
+  if (!article) {
+    res.status(401).json({
+      status: 'fail',
+      message: 'Article is not found',
+    });
+  }
+
   try {
     res.status(200).json({
       status: 'success',
+      data: {
+        article,
+      },
     });
   } catch (err) {
     res.status(500).json({
