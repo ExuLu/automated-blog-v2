@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js --watch"
   },
   "dependencies": {
     "express": "^5.2.1"
