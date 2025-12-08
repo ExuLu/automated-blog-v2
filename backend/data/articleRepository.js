@@ -11,19 +11,24 @@ try {
   articles = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
 } catch (err) {
   if (err.code === 'ENOENT') {
-    saveArticleToFile();
+    console.log('articles.json not found. Creating an empty file...');
+    fs.writeFileSync(FILE_PATH, '[]', 'utf-8');
+    articles = [];
+  } else {
+    console.error('Error reading articles.json:', err);
+    articles = [];
   }
 }
 
-function getAllArticles() {
+exports.getAllArticles = function () {
   return articles;
-}
+};
 
-function getArticleById(id) {
+exports.getArticleById = function (id) {
   return articles.find((article) => article.id === id) ?? null;
-}
+};
 
-function createArticle(articleData) {
+exports.createArticle = function (articleData) {
   const newArticle = {
     ...articleData,
     id: uuidv4(),
@@ -33,22 +38,14 @@ function createArticle(articleData) {
   articles.push(newArticle);
 
   return newArticle;
-}
+};
 
-async function saveArticleToFile() {
+exports.saveArticleToFile = async function () {
   const json = JSON.stringify(articles, null, 2);
 
   return await fsPromises.writeFile(FILE_PATH, json, 'utf-8');
-}
+};
 
-function removeArticleAfterError() {
+exports.removeArticleAfterError = function () {
   articles.pop();
-}
-
-module.exports = {
-  getAllArticles,
-  getArticleById,
-  createArticle,
-  saveArticleToFile,
-  removeArticleAfterError,
 };
