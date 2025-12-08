@@ -1,3 +1,5 @@
+const { validate: uuidValidate } = require('uuid');
+
 const TITLE_MAX_LENGTH = Number(process.env.TITLE_MAX_LENGTH) || 200;
 const CONTENT_MAX_LENGTH = Number(process.env.CONTENT_MAX_LENGTH) || 20000;
 
@@ -37,6 +39,19 @@ exports.validateArticle = (req, res, next) => {
 
   req.body.title = titleTrimmed;
   req.body.content = contentTrimmed;
+
+  next();
+};
+
+exports.validateArticleId = (req, res, next) => {
+  const { id } = req.params;
+
+  if (!uuidValidate(id)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Article id is not valid',
+    });
+  }
 
   next();
 };
