@@ -4,12 +4,13 @@ import styles from './ArticleItemDetailed.module.css';
 import useArticle from '../hooks/useArticle';
 import Error from './Error';
 import BackLink from './BackLink';
+import Spinner from './Spinner';
 
 const ArticleItemDetailed = () => {
   const { id: articleId } = useParams();
   const { article, isLoading, error } = useArticle(articleId);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Spinner />;
   if (error) return <Error message={error} />;
   if (!article) return <p className={styles.notFound}>Article not found</p>;
 
