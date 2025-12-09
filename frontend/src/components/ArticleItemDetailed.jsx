@@ -14,9 +14,9 @@ const ArticleItemDetailed = () => {
     <div className={styles.root}>
       {article ? (
         <>
-          <h1 className={styles.title}>{article.name}</h1>
-          <p className={styles.text}>{article.text}</p>
-          <p className={styles.meta}>{article.date}</p>
+          <h1 className={styles.title}>{article.title}</h1>
+          <p className={styles.text}>{article.content}</p>
+          <p className={styles.meta}>{article.createdAt}</p>
         </>
       ) : (
         <p className={styles.notFound}>Article not found</p>
