@@ -1,13 +1,14 @@
 import ArticleListItem from './ArticleListItem';
+import Error from './Error';
+import Spinner from './Spinner';
 import useArticles from '../hooks/useArticles';
 
 import styles from './ArticleList.module.css';
-
 const ArticleList = () => {
   const { articles, error, isLoading } = useArticles();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <p>{error}</p>;
+  if (isLoading) return <Spinner />;
+  if (error) return <Error message={error} isMainPage={true} />;
 
   return (
     <div className={styles.container}>

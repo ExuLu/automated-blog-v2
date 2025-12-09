@@ -1,0 +1,10 @@
+.backLink {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

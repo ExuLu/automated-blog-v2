@@ -31,7 +31,7 @@ app.use('/api/articles', articleRouter);
 app.use((req, res) => {
   res.status(404).json({
     status: 'fail',
-    message: 'Page not found',
+    message: 'Api route not found',
   });
 });
 
