@@ -6,6 +6,11 @@ const morgan = require('morgan');
 const articleRouter = require('./routes/articleRoute');
 
 const app = express();
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+const corsOptions = {
+  origin: FRONTEND_ORIGIN,
+  methods: ['GET', 'POST'],
+};
 
 app.use(helmet());
 
@@ -18,11 +23,7 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '10kb' }));
 
