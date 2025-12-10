@@ -55,3 +55,32 @@ exports.validateArticleId = (req, res, next) => {
 
   next();
 };
+
+exports.validateArticleTopic = (req, res, next) => {
+  const topic = req.body?.topic;
+
+  if (!topic) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Please provide topic to generate an article',
+    });
+  }
+
+  if (typeof topic !== 'string') {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Topic must be string',
+    });
+  }
+
+  if (topic.trim().length < 1) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Topic should not be empty',
+    });
+  }
+
+  req.body.topic = topic.trim();
+
+  next();
+};

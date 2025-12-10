@@ -27,6 +27,12 @@ Return ONLY valid JSON with the following shape (no backticks, no extra text):
   "title": "short and catchy title (max ${TITLE_MAX_LENGTH} characters)",
   "content": "full article text (max ${CONTENT_MAX_LENGTH} characters) with paragraphs separated by blank lines"
 }
+
+Rules for the JSON:
+- Do NOT include any line breaks inside the JSON. Return everything in ONE LINE.
+- Inside the "content" string, use "\\n\\n" to represent paragraph breaks instead of real line breaks.
+- Do NOT use unescaped double quotes inside "content". If you need quotes, use single quotes or escape them as \\".
+- Do NOT add any text before or after the JSON.
 `.trim();
 
 module.exports = {

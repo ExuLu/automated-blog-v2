@@ -1,6 +1,4 @@
-const dotenv = require('dotenv');
 const { systemPrompt, userPrompt } = require('./prompts');
-dotenv.config();
 
 const MODEL = process.env.LLM_MODEL;
 const API_KEY = process.env.OPENROUTER_API_KEY;
@@ -16,6 +14,35 @@ if (!OPENROUTER_URL) {
   throw new Error('OPENROUTER_URL is not set');
 }
 
+function parseJsonFromModel(rawContent) {
+  if (!rawContent) {
+    throw new Error('Empty content from LLM');
+  }
+
+  let text = Array.isArray(rawContent)
+    ? rawContent.map((part) => part?.text ?? '').join('')
+    : String(rawContent);
+
+  text = text.trim();
+
+  const firstBrace = text.indexOf('{');
+  const lastBrace = text.lastIndexOf('}');
+
+  if (firstBrace === -1 || lastBrace === -1 || lastBrace < firstBrace) {
+    console.log('Model content without valid JSON braces:', text);
+    throw new Error('Model did not return JSON-like content');
+  }
+
+  const jsonText = text.slice(firstBrace, lastBrace + 1);
+
+  try {
+    return JSON.parse(jsonText);
+  } catch (err) {
+    console.log('Raw model content:', jsonText);
+    throw new Error('Failed to parse article JSON from LLM');
+  }
+}
+
 async function generateArticle(topic) {
   const body = {
     model: MODEL,
@@ -23,7 +50,7 @@ async function generateArticle(topic) {
       { role: 'system', content: systemPrompt },
       {
         role: 'user',
-        content: userPrompt(topic).trim(),
+        content: userPrompt(topic),
       },
     ],
   };
@@ -54,14 +81,7 @@ async function generateArticle(topic) {
     throw new Error('LLM returned empty content');
   }
 
-  let article;
-  try {
-    article = JSON.parse(rawContent);
-  } catch (err) {
-    console.log('Raw model content:', rawContent);
-    throw new Error('Failed to parse article JSON from LLM');
-  }
-
+  const article = parseJsonFromModel(rawContent);
   return article;
 }
 
