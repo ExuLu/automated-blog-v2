@@ -1,0 +1,42 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy via SSH
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Remove .git dir
+        run: sudo rm -rf ./.git
+
+      - name: Copy files to server via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 3.66.27.82
+          username: ubuntu
+          key: ${{ secrets.TGBOT_SSH_PRIVATE_KEY }}
+          port: 22
+          source: 'deployment,scripts,package.json'
+          target: '/home/ubuntu/telegram-bot'
+          overwrite: true
+          strip_components: 0
+
+      - name: SSH and restart docker
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 3.66.27.82
+          username: ubuntu
+          key: ${{ secrets.TGBOT_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/telegram-bot/deployment
+            sudo docker compose down
+            sudo docker compose up -d

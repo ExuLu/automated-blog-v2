@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+
+WORKDIR /app
+
+COPY package.json package-lock.json .
+
+RUN npm ci
+
+COPY . .
+
+ENTRYPOINT ["npm", "run"]
+
+EXPOSE 3000
+
+CMD ["prod"]

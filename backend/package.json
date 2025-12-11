@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "ENABLE_DAILY_GENERATION=false node --watch server.js",
-    "prod": "NODE_ENV=production node --watch server.js"
+    "prod": "node --watch server.js"
   },
   "dependencies": {
     "@openrouter/sdk": "^0.2.9",
