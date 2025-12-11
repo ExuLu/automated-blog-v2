@@ -1,5 +1,5 @@
 const articleRepository = require('../data/articleRepository');
-const { createAndGenerate } = require('../services/articleService');
+const createAndGenerate = require('../services/articleService');
 
 exports.getAllArticles = (req, res) => {
   const articles = articleRepository.getAllArticles();

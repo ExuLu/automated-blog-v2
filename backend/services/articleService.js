@@ -19,4 +19,4 @@ async function createAndGenerate(topic) {
   return generatedArticle;
 }
 
-module.exports = { createAndGenerate };
+module.exports = createAndGenerate;
