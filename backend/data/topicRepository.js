@@ -13,3 +13,12 @@ try {
     topics = [];
   }
 }
+
+exports.getRandomTopic = function () {
+  if (!topics.length) {
+    return 'AI role in modern technologies';
+  }
+
+  const index = Math.floor(Math.random() * topics.length);
+  return topics[index];
+};
