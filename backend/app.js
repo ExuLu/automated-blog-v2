@@ -14,7 +14,9 @@ const corsOptions = {
 
 app.use(helmet());
 
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 const limiter = rateLimit({
   max: 100,
