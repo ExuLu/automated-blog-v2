@@ -30,3 +30,9 @@ export async function getArticleById(id) {
   const result = await request(`/articles/${id}`);
   return result.data.article;
 }
+
+export async function generateAndAddArticle(topic) {
+  const config = { method: 'POST', body: JSON.stringify({ topic }) };
+  const result = await request(`/articles/generate`, config);
+  return result.data.article;
+}

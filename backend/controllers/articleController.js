@@ -56,12 +56,12 @@ exports.createArticle = async (req, res) => {
 };
 
 exports.generateAndCreateArticle = async (req, res) => {
-  const topic = req.body.topic;
+  const { topic } = req.body;
 
   try {
     const newArticle = await createAndGenerate(topic);
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       data: {
         article: newArticle,
@@ -71,7 +71,9 @@ exports.generateAndCreateArticle = async (req, res) => {
     console.error('Generation failed: ', err);
 
     const statusCode =
-      err.status && Number.isInteger(err.status) ? err.status : 500;
+      Number.isInteger(err.status) && err.status >= 400 && err.status < 600
+        ? err.status
+        : 500;
 
     res.status(statusCode).json({
       status: 'error',
