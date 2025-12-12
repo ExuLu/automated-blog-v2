@@ -1,42 +1,50 @@
-# name: Deploy to Server
+name: Backend CI (CodeBuild Runner)
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/back.build.yml'
+  # pull_request:
+  #   paths:
+  #     - 'frontend/**'
 
-# jobs:
-#   deploy:
-#     name: Deploy via SSH
-#     runs-on: ubuntu-latest
+jobs:
+  build-backend:
+    runs-on: codebuild-blog-backend-${{ github.run_id }}-${{ github.run_attempt }}
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-#       - name: Remove .git dir
-#         run: sudo rm -rf ./.git
+      - name: Set image tag (timestamp)
+        run: |
+          echo $(date +'%Y%m%d-%H%M')
+          echo "IMAGE_TAG=$(date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
 
-#       - name: Copy files to server via SSH
-#         uses: appleboy/scp-action@v0.1.7
-#         with:
-#           host: 3.66.27.82
-#           username: ubuntu
-#           key: ${{ secrets.TGBOT_SSH_PRIVATE_KEY }}
-#           port: 22
-#           source: 'deployment,scripts,package.json'
-#           target: '/home/ubuntu/telegram-bot'
-#           overwrite: true
-#           strip_components: 0
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-#       - name: SSH and restart docker
-#         uses: appleboy/ssh-action@v1.0.3
-#         with:
-#           host: 3.66.27.82
-#           username: ubuntu
-#           key: ${{ secrets.TGBOT_SSH_PRIVATE_KEY }}
-#           port: 22
-#           script: |
-#             cd /home/ubuntu/telegram-bot/deployment
-#             sudo docker compose down
-#             sudo docker compose up -d
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        working-directory: backend
+        run: |
+          echo "Using tag: ${IMAGE_TAG}"
+          docker build -t production-backend:${IMAGE_TAG} .
+
+      - name: Tag and push image to ECR
+        working-directory: backend
+        run: |
+          REPOSITORY=production/backend
+
+          ECR_URI=${{ steps.login-ecr.outputs.registry }}/${REPOSITORY}
+
+          docker tag production/backend:${IMAGE_TAG} ${ECR_URI}:${IMAGE_TAG}
+
+          docker push ${ECR_URI}:${IMAGE_TAG}
+
+          docker tag ${ECR_URI}:${IMAGE_TAG} ${ECR_URI}:latest
+          docker push ${ECR_URI}:latest
