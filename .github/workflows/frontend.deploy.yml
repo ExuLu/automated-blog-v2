@@ -21,13 +21,11 @@ jobs:
         if: ${{ inputs.image_tag != 'latest' }}
         env:
           IMAGE_TAG: ${{ inputs.image_tag }}
-          FILE_PATH: "deploy/fronted.docker-compose.yml"
+          FILE_PATH: "deploy/frontend.docker-compose.yml"
         run: |
           sudo curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
           yq --version
-          ls -sral
-          ls -sral ../
           yq -i '
             (.services[].image |=
               (if . == null then .
