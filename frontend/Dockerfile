@@ -15,6 +15,7 @@ RUN npm run build
 
 FROM public.ecr.aws/nginx/nginx:1.29.4-alpine3.23-slim AS runtime
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
