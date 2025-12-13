@@ -3,8 +3,8 @@ version: '3.9'
 services:
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../backend
+      dockerfile: ../backend/Dockerfile
     container_name: 'blog-backend'
     ports:
       - '3000:3000'
@@ -26,8 +26,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../frontend
+      dockerfile: ../frontend/Dockerfile
     container_name: 'blog-frontend'
     ports:
       - '80:80'
@@ -39,4 +39,3 @@ services:
 
 networks:
   automated-blog:
-    external: 'true'
