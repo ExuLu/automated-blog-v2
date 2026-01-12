@@ -1,4 +1,4 @@
-import ArticleList from '../components/ArticleList';
+import ArticleList from '../components/ArticleList/ArticleList';
 
 const BlogPage = () => {
   return <ArticleList />;
