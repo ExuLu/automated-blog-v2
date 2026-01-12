@@ -2,9 +2,9 @@ import { Link, useParams } from 'react-router-dom';
 
 import styles from './ArticleItemDetailed.module.css';
 import useArticle from '../../hooks/useArticle';
-import Error from '../Error';
-import BackLink from '../BackLink';
-import Spinner from '../Spinner';
+import Error from '../Error/Error';
+import BackLink from '../BackLink/BackLink';
+import Spinner from '../Spinner/Spinner';
 
 const ArticleItemDetailed = () => {
   const { id: articleId } = useParams();

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import Error from './Error';
-import { generateAndAddArticle } from '../api/articlesApi';
+import Error from '../Error/Error';
+import { generateAndAddArticle } from '../../api/articlesApi';
 
 import styles from './GenerateArticleForm.module.css';
 

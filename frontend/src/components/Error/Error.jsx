@@ -1,5 +1,5 @@
 import styles from './Error.module.css';
-import BackLink from './BackLink';
+import BackLink from '../BackLink/BackLink';
 
 export default function Error({ message, isMainPage = false }) {
   return (
