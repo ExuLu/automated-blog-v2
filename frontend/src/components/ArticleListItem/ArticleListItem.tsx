@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 
+import type { Article } from '../../types/article';
+
 import styles from './ArticleListItem.module.css';
 
-const ArticleListItem = ({ article }) => {
+const ArticleListItem = ({ article }: { article: Article }) => {
   const shortText = article.content.substring(0, 99);
 
   return (
