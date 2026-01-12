@@ -8,8 +8,8 @@ import useArticle from '../../hooks/useArticle';
 import styles from './ArticleItemDetailed.module.css';
 
 const ArticleItemDetailed = () => {
-  const { id: articleId } = useParams();
-  const { article, isLoading, error } = useArticle(articleId);
+  const { id: articleId } = useParams<{ id: string }>();
+  const { article, isLoading, error } = useArticle(articleId!);
 
   if (isLoading) return <Spinner />;
   if (error) return <Error message={error} />;
