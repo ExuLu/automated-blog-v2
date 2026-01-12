@@ -1,4 +1,4 @@
-import ArticleListItem from '../ArticleListItem';
+import ArticleListItem from '../ArticleListItem/ArticleListItem';
 import Error from '../Error';
 import Spinner from '../Spinner';
 import useArticles from '../../hooks/useArticles';
