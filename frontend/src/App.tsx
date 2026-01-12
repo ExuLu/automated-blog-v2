@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import BlogPage from './routes/BlogPage.jsx';
-import PostPage from './routes/PostPage.jsx';
+import BlogPage from './routes/BlogPage.tsx';
+import PostPage from './routes/PostPage.tsx';
 
 import styles from './App.module.css';
 
