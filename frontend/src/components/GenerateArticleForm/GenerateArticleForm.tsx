@@ -1,16 +1,21 @@
 import { useState } from 'react';
 
-import Error from '../Error/Error';
+import ErrorComponent from '../Error/Error';
 import { generateAndAddArticle } from '../../api/articlesApi';
 
 import styles from './GenerateArticleForm.module.css';
+import type { AppError } from '../../types/error';
 
-export default function GenerateArticleForm({ submitAction }) {
-  const [topic, setTopic] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+type GenerateArticleFormProps = { submitAction: () => Promise<void> };
 
-  const handleSubmit = async function (e) {
+export default function GenerateArticleForm({
+  submitAction,
+}: GenerateArticleFormProps) {
+  const [topic, setTopic] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<AppError>(null);
+
+  const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!topic.trim()) return;
@@ -22,7 +27,9 @@ export default function GenerateArticleForm({ submitAction }) {
       await generateAndAddArticle(topic);
       submitAction();
     } catch (err) {
-      setError(err.message || 'Failed to generate topic');
+      setError(
+        err instanceof Error ? err.message : 'Failed to generate article'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +39,7 @@ export default function GenerateArticleForm({ submitAction }) {
 
   return (
     <>
-      {error && <Error isMainPage={true} message={error} />}
+      {error && <ErrorComponent isMainPage={true} message={error} />}
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.label}>

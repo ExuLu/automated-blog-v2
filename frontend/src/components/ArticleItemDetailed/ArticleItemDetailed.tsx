@@ -1,14 +1,15 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+import BackLink from '../BackLink/BackLink';
+import Error from '../Error/Error';
+import Spinner from '../Spinner/Spinner';
+import useArticle from '../../hooks/useArticle';
 
 import styles from './ArticleItemDetailed.module.css';
-import useArticle from '../../hooks/useArticle';
-import Error from '../Error/Error';
-import BackLink from '../BackLink/BackLink';
-import Spinner from '../Spinner/Spinner';
 
 const ArticleItemDetailed = () => {
-  const { id: articleId } = useParams();
-  const { article, isLoading, error } = useArticle(articleId);
+  const { id: articleId } = useParams<{ id: string }>();
+  const { article, isLoading, error } = useArticle(articleId!);
 
   if (isLoading) return <Spinner />;
   if (error) return <Error message={error} />;

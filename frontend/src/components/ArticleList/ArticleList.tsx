@@ -1,10 +1,11 @@
 import ArticleListItem from '../ArticleListItem/ArticleListItem';
 import Error from '../Error/Error';
+import GenerateArticleForm from '../GenerateArticleForm/GenerateArticleForm';
 import Spinner from '../Spinner/Spinner';
 import useArticles from '../../hooks/useArticles';
 
 import styles from './ArticleList.module.css';
-import GenerateArticleForm from '../GenerateArticleForm/GenerateArticleForm';
+
 const ArticleList = () => {
   const { articles, error, isLoading, refetch } = useArticles();
 

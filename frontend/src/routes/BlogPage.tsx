@@ -1,4 +1,4 @@
-import ArticleList from '../components/ArticleList/ArticleList';
+import ArticleList from '../components/ArticleList/ArticleList.tsx';
 
 const BlogPage = () => {
   return <ArticleList />;

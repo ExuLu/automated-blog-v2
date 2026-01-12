@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react';
+
 import { getArticleById } from '../api/articlesApi';
 
-export default function useArticle(id) {
-  const [article, setArticle] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+import type { Article } from '../types/article';
+import type { AppError } from '../types/error';
+
+interface UseArticleResult {
+  article: Article | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+type ArticleState = Article | null;
+
+export default function useArticle(id: string): UseArticleResult {
+  const [article, setArticle] = useState<ArticleState>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<AppError>(null);
 
   useEffect(() => {
-    if (!id) return;
-
     let isCancelled = false;
 
     async function loadArticle() {
@@ -23,7 +33,9 @@ export default function useArticle(id) {
         }
       } catch (err) {
         if (!isCancelled) {
-          setError(err.message || 'Failed to load an article');
+          setError(
+            err instanceof Error ? err.message : 'Failed to load article'
+          );
         }
       } finally {
         if (!isCancelled) {

@@ -1,7 +1,10 @@
-import styles from './Error.module.css';
 import BackLink from '../BackLink/BackLink';
 
-export default function Error({ message, isMainPage = false }) {
+import styles from './Error.module.css';
+
+type ErrorProps = { message: string; isMainPage?: boolean };
+
+export default function Error({ message, isMainPage = false }: ErrorProps) {
   return (
     <div className={styles.root}>
       <div className={styles.box}>

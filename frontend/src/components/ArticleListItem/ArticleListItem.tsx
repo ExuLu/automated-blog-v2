@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 
+import type { Article } from '../../types/article';
+
 import styles from './ArticleListItem.module.css';
 
-const ArticleListItem = ({ article }) => {
-  const shortText = article.content.substring(0, 99);
+type ArticleListItemProps = { article: Article };
+
+const PREVIEW_LENGTH = 99;
+
+const ArticleListItem = ({ article }: ArticleListItemProps) => {
+  const shortText = article.content.substring(0, PREVIEW_LENGTH);
 
   return (
     <Link to={`/articles/${article.id}`} className={styles.card}>
