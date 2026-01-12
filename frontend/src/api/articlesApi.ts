@@ -1,10 +1,6 @@
-import type {
-  ApiError,
-  ApiFailure,
-  ApiResponse,
-  ArticlePayload,
-  ArticlesPayload,
-} from '../types/article';
+import type { ApiFailure, ApiResponse } from '../types/api';
+import type { ArticlePayload, ArticlesPayload } from '../types/article';
+import type { ApiError } from '../types/error';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 

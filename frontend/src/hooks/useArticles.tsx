@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getAllArticles } from '../api/articlesApi';
 import type { Article } from '../types/article';
+import type { AppError } from '../types/error';
 
 interface UseArticlesResult {
   articles: Article[];
@@ -8,7 +9,6 @@ interface UseArticlesResult {
   error: string | null;
   refetch: () => Promise<void>;
 }
-type AppError = string | null;
 
 export default function useArticles(): UseArticlesResult {
   const [articles, setArticles] = useState<Article[]>([]);
