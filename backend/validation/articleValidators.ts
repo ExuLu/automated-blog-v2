@@ -1,22 +1,26 @@
-const { validate: uuidValidate } = require('uuid');
+import { validate as uuidValidate } from 'uuid';
 
-const TITLE_MAX_LENGTH = Number(process.env.TITLE_MAX_LENGTH) || 200;
-const CONTENT_MAX_LENGTH = Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+import type { NextFunction, Request, Response } from 'express';
+import type { ParamsDictionary } from 'express-serve-static-core';
 
-exports.validateArticle = (req, res, next) => {
+type ArticleBody = { title?: string; content?: string };
+type TopicBody = { topic?: string };
+
+const TITLE_MAX_LENGTH: number = Number(process.env.TITLE_MAX_LENGTH) || 200;
+const CONTENT_MAX_LENGTH: number =
+  Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+
+export const validateArticle = (
+  req: Request<ParamsDictionary, unknown, ArticleBody>,
+  res: Response,
+  next: NextFunction
+) => {
   const { title, content } = req.body || {};
-
-  if (!title || !content) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'The article should contain title and content',
-    });
-  }
 
   if (typeof title !== 'string' || typeof content !== 'string') {
     return res.status(400).json({
       status: 'fail',
-      message: 'Title and content must be strings',
+      message: 'The article should contain title and content',
     });
   }
 
@@ -43,7 +47,11 @@ exports.validateArticle = (req, res, next) => {
   next();
 };
 
-exports.validateArticleId = (req, res, next) => {
+export const validateArticleId = (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   if (!uuidValidate(id)) {
@@ -56,31 +64,30 @@ exports.validateArticleId = (req, res, next) => {
   next();
 };
 
-exports.validateArticleTopic = (req, res, next) => {
-  const topic = req.body?.topic;
+export const validateArticleTopic = (
+  req: Request<ParamsDictionary, unknown, TopicBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { topic } = req.body || {};
 
-  if (!topic) {
+  if (typeof topic !== 'string') {
     return res.status(400).json({
       status: 'fail',
       message: 'Please provide topic to generate an article',
     });
   }
 
-  if (typeof topic !== 'string') {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Topic must be string',
-    });
-  }
+  const trimmedTopic = topic.trim();
 
-  if (topic.trim().length < 1) {
+  if (trimmedTopic.length < 1) {
     return res.status(400).json({
       status: 'fail',
       message: 'Topic should not be empty',
     });
   }
 
-  req.body.topic = topic.trim();
+  req.body.topic = trimmedTopic;
 
   next();
 };

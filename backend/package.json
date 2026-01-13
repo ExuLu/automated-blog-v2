@@ -1,7 +1,8 @@
 {
+  "type": "module",
   "scripts": {
-    "dev": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only server.ts",
-    "dev:ts": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only server.ts",
+    "dev": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only --esm server.ts",
+    "dev:ts": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only --esm server.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "start": "npm run build && node dist/server.js",

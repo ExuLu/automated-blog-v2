@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import app from './app';
-import startArticleScheduler from './services/articleScheduler';
+import app from './app.js';
+import startArticleScheduler from './services/articleScheduler.js';
 
 import type { Server } from 'http';
 

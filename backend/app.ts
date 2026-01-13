@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import morgan from 'morgan';
-import articleRouter from './routes/articleRoute';
+import articleRouter from './routes/articleRoute.js';
 
 import type { Express, Request, Response } from 'express';
 import type { CorsOptions } from 'cors';
