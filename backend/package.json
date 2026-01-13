@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "dev": "ENABLE_DAILY_GENERATION=false node --watch server.js",
+    "dev": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only server.ts",
     "dev:ts": "ENABLE_DAILY_GENERATION=false ts-node-dev --respawn --transpile-only server.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "start": "node server.js",
-    "prod": "node server.js"
+    "start": "npm run build && node dist/server.js",
+    "prod": "npm run build && node dist/server.js"
   },
   "dependencies": {
     "@openrouter/sdk": "^0.2.9",
