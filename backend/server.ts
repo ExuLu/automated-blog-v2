@@ -22,7 +22,7 @@ const server: Server = app.listen(port, () => {
 
 process.on('unhandledRejection', (err: unknown) => {
   const error = err instanceof Error ? err : new Error(String(err));
-  
+
   console.log(error.name, error.message);
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   server.close(() => {
