@@ -1,4 +1,4 @@
-import { ArticleInput } from './article.js';
+import { ArticleRecord } from './article.js';
 
 export type SuccessResBody<TData> = {
   status: 'success';
@@ -11,7 +11,7 @@ export type ErrorResBody = {
 };
 
 export type ArticlesResBody = SuccessResBody<{
-  articles: ArticleInput[];
+  articles: ArticleRecord[];
 }>;
 
-export type ArticleResBody = SuccessResBody<{ article: ArticleInput }>;
+export type ArticleResBody = SuccessResBody<{ article: ArticleRecord }>;
