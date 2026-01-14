@@ -1,25 +1,15 @@
 import articleRepository from '../data/articleRepository.js';
 import createAndGenerate from '../services/articleService.js';
-import HttpError from '../errors/HttpError.js';
+import { normalizeError } from '../errors/normalizeError.js';
 
 import type { Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
-import { normalizeError } from '../errors/normalizeError.js';
-
-type ArticleBody = { title?: string; content?: string };
-type TopicBody = { topic?: string };
-type SuccessResponseBody<TData> = {
-  status: 'success';
-  data: TData;
-};
-type ErrorResponseBody = {
-  status: 'fail' | 'error';
-  message: string;
-};
-type ArticlesResBody = SuccessResponseBody<{
-  articles: ArticleBody[];
-}>;
-type ArticleResBody = SuccessResponseBody<{ article: ArticleBody }>;
+import type { ArticleInput, TopicInput } from '../types/article.js';
+import {
+  ArticleResBody,
+  ArticlesResBody,
+  ErrorResBody,
+} from '../types/responses.js';
 
 export const getAllArticles = (
   req: Request,
@@ -37,7 +27,7 @@ export const getAllArticles = (
 
 export const getArticleById = (
   req: Request<{ id: string }>,
-  res: Response<ArticleResBody | ErrorResponseBody>
+  res: Response<ArticleResBody | ErrorResBody>
 ) => {
   const article = articleRepository.getArticleById(req.params.id);
 
@@ -57,8 +47,8 @@ export const getArticleById = (
 };
 
 export const createArticle = async (
-  req: Request<ParamsDictionary, unknown, ArticleBody>,
-  res: Response<ArticleResBody | ErrorResponseBody>
+  req: Request<ParamsDictionary, unknown, ArticleInput>,
+  res: Response<ArticleResBody | ErrorResBody>
 ) => {
   let newArticle: ReturnType<typeof articleRepository.createArticle> | null =
     null;
@@ -101,8 +91,8 @@ export const createArticle = async (
 };
 
 export const generateAndCreateArticle = async (
-  req: Request<ParamsDictionary, unknown, TopicBody>,
-  res: Response<ArticleResBody | ErrorResponseBody>
+  req: Request<ParamsDictionary, unknown, TopicInput>,
+  res: Response<ArticleResBody | ErrorResBody>
 ) => {
   const { topic } = req.body;
 

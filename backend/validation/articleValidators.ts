@@ -2,16 +2,14 @@ import { validate as uuidValidate } from 'uuid';
 
 import type { NextFunction, Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
-
-type ArticleBody = { title?: string; content?: string };
-type TopicBody = { topic?: string };
+import { ArticleInput, TopicInput } from '../types/article.js';
 
 const TITLE_MAX_LENGTH: number = Number(process.env.TITLE_MAX_LENGTH) || 200;
 const CONTENT_MAX_LENGTH: number =
   Number(process.env.CONTENT_MAX_LENGTH) || 20000;
 
 export const validateArticle = (
-  req: Request<ParamsDictionary, unknown, ArticleBody>,
+  req: Request<ParamsDictionary, unknown, ArticleInput>,
   res: Response,
   next: NextFunction
 ) => {
@@ -65,7 +63,7 @@ export const validateArticleId = (
 };
 
 export const validateArticleTopic = (
-  req: Request<ParamsDictionary, unknown, TopicBody>,
+  req: Request<ParamsDictionary, unknown, TopicInput>,
   res: Response,
   next: NextFunction
 ) => {
