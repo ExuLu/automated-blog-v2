@@ -43,7 +43,7 @@ exports.createArticle = function (articleData) {
 exports.saveArticleToFile = async function () {
   const json = JSON.stringify(articles, null, 2);
 
-  return await fsPromises.writeFile(FILE_PATH, json, 'utf-8');
+  await fsPromises.writeFile(FILE_PATH, json, 'utf-8');
 };
 
 exports.removeArticleAfterError = function () {
