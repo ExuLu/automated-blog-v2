@@ -1,5 +1,9 @@
 import generateArticle from './articleGenerator.js';
-import articleRepository from '../data/articleRepository.js';
+import {
+  createArticleRepo,
+  saveArticleToFile,
+  removeArticleAfterError,
+} from '../data/articleRepository.js';
 import { DEFAULT_TOPIC } from '../data/topicRepository.js';
 import { ArticleInput, ArticleRecord } from '../types/article.js';
 import HttpError from '../errors/HttpError.js';
@@ -11,13 +15,12 @@ export default async function createAndGenerate(
     topic || DEFAULT_TOPIC
   );
 
-  const generatedArticle: ArticleRecord =
-    articleRepository.createArticle(generatedData);
+  const generatedArticle: ArticleRecord = createArticleRepo(generatedData);
 
   try {
-    await articleRepository.saveArticleToFile();
+    await saveArticleToFile();
   } catch (err) {
-    articleRepository.removeArticleAfterError();
+    removeArticleAfterError();
 
     console.error('Failed to save generated article:', err);
     throw new HttpError(500, 'Failed to save generated article');

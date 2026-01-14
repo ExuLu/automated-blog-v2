@@ -1,16 +1,20 @@
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+
+import { ArticleInput, ArticleRecord } from '../types/article.js';
 
 const fsPromises = fs.promises;
 
-let articles = [];
-const FILE_PATH = process.env.ARTICLES_PATH;
+let articles: ArticleRecord[] = [];
+const FILE_PATH =
+  process.env.ARTICLES_PATH ?? path.join(__dirname, 'articles.json');
 
 try {
   articles = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
 } catch (err) {
-  if (err.code === 'ENOENT') {
+  const error = err as NodeJS.ErrnoException;
+  if (error.code === 'ENOENT') {
     console.log('articles.json not found. Creating an empty file...');
     fs.writeFileSync(FILE_PATH, '[]', 'utf-8');
     articles = [];
@@ -20,15 +24,17 @@ try {
   }
 }
 
-exports.getAllArticles = function () {
+export const getAllArticlesRepo = function (): ArticleRecord[] {
   return articles;
 };
 
-exports.getArticleById = function (id) {
+export const getArticleByIdRepo = function (id: string): ArticleRecord | null {
   return articles.find((article) => article.id === id) ?? null;
 };
 
-exports.createArticle = function (articleData) {
+export const createArticleRepo = function (
+  articleData: ArticleInput
+): ArticleRecord {
   const newArticle = {
     ...articleData,
     id: uuidv4(),
@@ -40,12 +46,12 @@ exports.createArticle = function (articleData) {
   return newArticle;
 };
 
-exports.saveArticleToFile = async function () {
+export const saveArticleToFile = async function (): Promise<void> {
   const json = JSON.stringify(articles, null, 2);
 
   await fsPromises.writeFile(FILE_PATH, json, 'utf-8');
 };
 
-exports.removeArticleAfterError = function () {
+export const removeArticleAfterError = function (): void {
   articles.pop();
 };

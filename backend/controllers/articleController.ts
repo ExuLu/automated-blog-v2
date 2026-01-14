@@ -1,10 +1,20 @@
-import articleRepository from '../data/articleRepository.js';
+import {
+  getAllArticlesRepo,
+  getArticleByIdRepo,
+  createArticleRepo,
+  saveArticleToFile,
+  removeArticleAfterError,
+} from '../data/articleRepository.js';
 import createAndGenerate from '../services/articleService.js';
 import { normalizeError } from '../errors/normalizeError.js';
 
 import type { Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
-import type { ArticleInput, TopicInput } from '../types/article.js';
+import type {
+  ArticleInput,
+  ArticleRecord,
+  TopicInput,
+} from '../types/article.js';
 import {
   ArticleResBody,
   ArticlesResBody,
@@ -15,7 +25,7 @@ export const getAllArticles = (
   req: Request,
   res: Response<ArticlesResBody>
 ) => {
-  const articles = articleRepository.getAllArticles();
+  const articles = getAllArticlesRepo();
 
   res.status(200).json({
     status: 'success',
@@ -29,7 +39,7 @@ export const getArticleById = (
   req: Request<{ id: string }>,
   res: Response<ArticleResBody | ErrorResBody>
 ) => {
-  const article = articleRepository.getArticleById(req.params.id);
+  const article = getArticleByIdRepo(req.params.id);
 
   if (!article) {
     return res.status(404).json({
@@ -50,16 +60,15 @@ export const createArticle = async (
   req: Request<ParamsDictionary, unknown, ArticleInput>,
   res: Response<ArticleResBody | ErrorResBody>
 ) => {
-  let newArticle: ReturnType<typeof articleRepository.createArticle> | null =
-    null;
+  let newArticle: ArticleRecord | null = null;
 
   try {
-    newArticle = articleRepository.createArticle({
+    newArticle = createArticleRepo({
       title: req.body.title,
       content: req.body.content,
     });
 
-    await articleRepository.saveArticleToFile();
+    await saveArticleToFile();
 
     res.status(201).json({
       status: 'success',
@@ -72,7 +81,7 @@ export const createArticle = async (
 
     if (newArticle) {
       try {
-        articleRepository.removeArticleAfterError();
+        removeArticleAfterError();
       } catch (cleanupErr) {
         console.error('Failed to rollback article after error:', cleanupErr);
       }
