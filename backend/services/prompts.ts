@@ -1,7 +1,8 @@
-const TITLE_MAX_LENGTH = Number(process.env.TITLE_MAX_LENGTH) || 200;
-const CONTENT_MAX_LENGTH = Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+const TITLE_MAX_LENGTH: number = Number(process.env.TITLE_MAX_LENGTH) || 200;
+const CONTENT_MAX_LENGTH: number =
+  Number(process.env.CONTENT_MAX_LENGTH) || 20000;
 
-const systemPrompt = `
+export const systemPrompt: string = `
 You are an assistant that writes clear, structured blog articles in English
 for a technical but non-expert audience.
 
@@ -11,11 +12,12 @@ You must ALWAYS obey these constraints:
 - The response MUST be plain text (no markdown, no bullet lists, no code blocks).
 - Paragraphs in "content" must be separated by a single blank line.
 - If the text would exceed the limits, truncate it gracefully.
+- If the topic is repeated, create new article with this topic, DO NOT use the previous article.
 
 Always respond ONLY with valid JSON, no explanations, no markdown, no extra text.
 `.trim();
 
-const userPrompt = (topic) =>
+export const userPrompt = (topic: string): string =>
   `
 Generate a blog article about the following topic:
 
@@ -34,8 +36,3 @@ Rules for the JSON:
 - Do NOT use unescaped double quotes inside "content". If you need quotes, use single quotes or escape them as \\".
 - Do NOT add any text before or after the JSON.
 `.trim();
-
-module.exports = {
-  systemPrompt,
-  userPrompt,
-};
