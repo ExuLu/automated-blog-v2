@@ -1,8 +1,12 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
-import app from './app.js';
-import startArticleScheduler from './services/articleScheduler.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
+dotenv.config({
+  path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env'),
+});
+const { default: app } = await import('./app.js');
+const { default: startArticleScheduler } =
+  await import('./services/articleScheduler.js');
 
 import type { Server } from 'http';
 

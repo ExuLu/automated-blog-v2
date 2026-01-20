@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ArticleInput, ArticleRecord } from '../types/article.js';
 
 const fsPromises = fs.promises;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let articles: ArticleRecord[] = [];
 const FILE_PATH =
@@ -33,7 +37,7 @@ export const getArticleByIdRepo = function (id: string): ArticleRecord | null {
 };
 
 export const createArticleRepo = function (
-  articleData: ArticleInput
+  articleData: ArticleInput,
 ): ArticleRecord {
   const newArticle = {
     ...articleData,

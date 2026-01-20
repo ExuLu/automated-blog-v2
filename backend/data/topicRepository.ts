@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { DEFAULT_TOPIC } from '../constants.js';
 
 let topics: string[] = [];
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const FILE_PATH = path.join(__dirname, 'topics.json');
 
 const isStringArray = (parsedData: unknown): parsedData is string[] =>
@@ -16,7 +19,7 @@ try {
     topics = parsed;
   } else {
     console.error(
-      'topics.json contains wrong topics type. Using empty topics list.'
+      'topics.json contains wrong topics type. Using empty topics list.',
     );
     topics = [];
   }
