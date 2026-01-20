@@ -1,6 +1,7 @@
 import HttpError from '../errors/HttpError.js';
 import { ArticleInput } from '../types/article.js';
 import { PromptBody } from '../types/llm.js';
+import { isArticleInput } from '../validation/articleValidators.js';
 import { isDefinedString } from '../validation/isDefinedString.js';
 import {
   isChatCompletionResponse,
@@ -11,18 +12,6 @@ import { systemPrompt, userPrompt } from './prompts.js';
 const MODEL = process.env.LLM_MODEL;
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_URL = process.env.OPENROUTER_URL;
-
-const isArticleInput = (article: unknown): article is ArticleInput => {
-  if (!article || typeof article !== 'object') return false;
-  const partialArticleInput = article as Partial<ArticleInput>;
-
-  return (
-    typeof partialArticleInput.title === 'string' &&
-    typeof partialArticleInput.content === 'string' &&
-    !!partialArticleInput.content.trim() &&
-    !!partialArticleInput.title.trim()
-  );
-};
 
 export default async function generateArticle(
   topic: string,
