@@ -1,7 +1,6 @@
-const TITLE_MAX_LENGTH = Number(process.env.TITLE_MAX_LENGTH) || 200;
-const CONTENT_MAX_LENGTH = Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
 
-const systemPrompt = `
+export const systemPrompt: string = `
 You are an assistant that writes clear, structured blog articles in English
 for a technical but non-expert audience.
 
@@ -11,15 +10,22 @@ You must ALWAYS obey these constraints:
 - The response MUST be plain text (no markdown, no bullet lists, no code blocks).
 - Paragraphs in "content" must be separated by a single blank line.
 - If the text would exceed the limits, truncate it gracefully.
+- If the topic is repeated, create new article with this topic, DO NOT use the previous article.
+- Pick a fresh angle that is different from common explanations: use a different framing, examples, and metaphors.
+- Avoid generic titles; generate a title that does not reuse common phrases from typical articles on this topic.
+- Use at least 2 concrete examples that are unlikely to be the first obvious ones.
 
 Always respond ONLY with valid JSON, no explanations, no markdown, no extra text.
 `.trim();
 
-const userPrompt = (topic) =>
+export const userPrompt = (topic: string): string =>
   `
 Generate a blog article about the following topic:
 
 "${topic}"
+
+- Pick ONE unique angle from: common mistakes, surprising trade-offs, beginner myths, real-world scenario, performance pitfalls, security considerations. Use a different one each time.
+- Ensure the title is unique and does not start with ‘How to’, ‘Guide’, ‘Understanding’, ‘Everything’, ‘Introduction’.
 
 Return ONLY valid JSON with the following shape (no backticks, no extra text):
 
@@ -34,8 +40,3 @@ Rules for the JSON:
 - Do NOT use unescaped double quotes inside "content". If you need quotes, use single quotes or escape them as \\".
 - Do NOT add any text before or after the JSON.
 `.trim();
-
-module.exports = {
-  systemPrompt,
-  userPrompt,
-};
