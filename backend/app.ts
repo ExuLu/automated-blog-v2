@@ -12,6 +12,9 @@ import type { RateLimitRequestHandler } from 'express-rate-limit';
 const app: Express = express();
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
+if (!FRONTEND_ORIGIN)
+  throw Error('Please provide FRONTEND_ORIGIN to setup cors');
+
 app.set('trust proxy', true);
 
 const corsOptions: CorsOptions = {

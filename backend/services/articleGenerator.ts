@@ -1,18 +1,18 @@
 import HttpError from '../errors/HttpError.js';
 import { isOpenRouterError } from '../errors/normalizeError.js';
 import { ArticleInput } from '../types/article.js';
-import {
-  OpenRouterChatCompletionResponse,
-  PromptBody,
-} from '../types/llm.js';
+import { OpenRouterChatCompletionResponse, PromptBody } from '../types/llm.js';
 import { systemPrompt, userPrompt } from './prompts.js';
 
 const MODEL = process.env.LLM_MODEL;
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_URL = process.env.OPENROUTER_URL;
 
-const isUndefined = (envVariable: unknown): envVariable is undefined =>
-  envVariable === undefined;
+const isDefinedString = (
+  envVariable: string | undefined,
+): envVariable is string => {
+  return envVariable !== undefined && !!envVariable.trim();
+};
 
 function isChatCompletionResponse(
   data: unknown,
@@ -24,26 +24,34 @@ function isChatCompletionResponse(
     return false;
   }
 
-  return obj.choices.every((choice) => {
-    if (!choice || typeof choice !== 'object') return false;
-
-    const message = (choice as any).message;
-    return (
-      message &&
-      typeof message === 'object' &&
-      (message.content === null || typeof message.content === 'string') &&
-      message.role === 'assistant'
-    );
-  });
+  const message = obj.choices[0]?.message;
+  return (
+    !!message &&
+    typeof message === 'object' &&
+    typeof message.content === 'string' &&
+    message.role === 'assistant'
+  );
 }
+
+const isArticleInput = (article: unknown): article is ArticleInput => {
+  if (!article || typeof article !== 'object') return false;
+  const partialArticleInput = article as Partial<ArticleInput>;
+
+  return (
+    typeof partialArticleInput.title === 'string' &&
+    typeof partialArticleInput.content === 'string' &&
+    !!partialArticleInput.content.trim() &&
+    !!partialArticleInput.title.trim()
+  );
+};
 
 export default async function generateArticle(
   topic: string,
 ): Promise<ArticleInput> {
   if (
-    isUndefined(MODEL) ||
-    isUndefined(API_KEY) ||
-    isUndefined(OPENROUTER_URL)
+    !isDefinedString(MODEL) ||
+    !isDefinedString(API_KEY) ||
+    !isDefinedString(OPENROUTER_URL)
   ) {
     throw new Error('Please set your environment variables correctly');
   }
@@ -83,14 +91,18 @@ export default async function generateArticle(
     throw new Error('Unexpected OpenRouter response format');
   }
 
-  const rawContent = data.choices?.[0]?.message?.content;
+  const rawContent = data.choices[0].message.content;
 
-  if (!rawContent) {
+  if (!rawContent || rawContent.trim() === '') {
     throw new Error('LLM returned empty content');
   }
 
   try {
-    const article = JSON.parse(rawContent);
+    const article: unknown = JSON.parse(rawContent);
+
+    if (!isArticleInput(article))
+      throw new Error('LLM returned wrong article format');
+
     return article;
   } catch (err) {
     console.log('Raw model content:', rawContent);
