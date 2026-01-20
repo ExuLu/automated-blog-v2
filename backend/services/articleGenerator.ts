@@ -1,32 +1,16 @@
 import HttpError from '../errors/HttpError.js';
-import { isOpenRouterError } from '../errors/normalizeError.js';
 import { ArticleInput } from '../types/article.js';
-import { OpenRouterChatCompletionResponse, PromptBody } from '../types/llm.js';
+import { PromptBody } from '../types/llm.js';
 import { isDefinedString } from '../validation/isDefinedString.js';
+import {
+  isChatCompletionResponse,
+  isOpenRouterErrorResponse,
+} from '../validation/openRouterResponses.js';
 import { systemPrompt, userPrompt } from './prompts.js';
 
 const MODEL = process.env.LLM_MODEL;
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_URL = process.env.OPENROUTER_URL;
-
-function isChatCompletionResponse(
-  data: unknown,
-): data is OpenRouterChatCompletionResponse {
-  if (!data || typeof data !== 'object') return false;
-
-  const obj = data as Partial<OpenRouterChatCompletionResponse>;
-  if (obj.object !== 'chat.completion' || !Array.isArray(obj.choices)) {
-    return false;
-  }
-
-  const message = obj.choices[0]?.message;
-  return (
-    !!message &&
-    typeof message === 'object' &&
-    typeof message.content === 'string' &&
-    message.role === 'assistant'
-  );
-}
 
 const isArticleInput = (article: unknown): article is ArticleInput => {
   if (!article || typeof article !== 'object') return false;
@@ -75,7 +59,7 @@ export default async function generateArticle(
   const data: unknown = await response.json();
 
   if (!response.ok) {
-    const message = isOpenRouterError(data)
+    const message = isOpenRouterErrorResponse(data)
       ? data.error.message
       : `OpenRouter request failed with status ${response.status}`;
 
