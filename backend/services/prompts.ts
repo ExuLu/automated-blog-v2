@@ -1,6 +1,4 @@
-const TITLE_MAX_LENGTH: number = Number(process.env.TITLE_MAX_LENGTH) || 200;
-const CONTENT_MAX_LENGTH: number =
-  Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants.js";
 
 export const systemPrompt: string = `
 You are an assistant that writes clear, structured blog articles in English

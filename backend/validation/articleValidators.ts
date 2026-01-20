@@ -4,15 +4,12 @@ import type { NextFunction, Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
 import { ArticleInput, TopicInput } from '../types/article.js';
 import { ErrorResBody } from '../types/responses.js';
-
-const TITLE_MAX_LENGTH: number = Number(process.env.TITLE_MAX_LENGTH) || 200;
-const CONTENT_MAX_LENGTH: number =
-  Number(process.env.CONTENT_MAX_LENGTH) || 20000;
+import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
 
 export const validateArticle = (
   req: Request<ParamsDictionary, unknown, Partial<ArticleInput>>,
   res: Response<ErrorResBody>,
-  next: NextFunction
+  next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, ArticleInput> => {
   const { title, content } = req.body || {};
 
@@ -52,7 +49,7 @@ export const validateArticle = (
 export const validateArticleId = (
   req: Request<{ id: string }>,
   res: Response<ErrorResBody>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
 
@@ -69,7 +66,7 @@ export const validateArticleId = (
 export const validateArticleTopic = (
   req: Request<ParamsDictionary, unknown, Partial<TopicInput>>,
   res: Response<ErrorResBody>,
-  next: NextFunction
+  next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, TopicInput> => {
   const { topic } = req.body || {};
 

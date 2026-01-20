@@ -2,17 +2,12 @@ import HttpError from '../errors/HttpError.js';
 import { isOpenRouterError } from '../errors/normalizeError.js';
 import { ArticleInput } from '../types/article.js';
 import { OpenRouterChatCompletionResponse, PromptBody } from '../types/llm.js';
+import { isDefinedString } from '../validation/isDefinedString.js';
 import { systemPrompt, userPrompt } from './prompts.js';
 
 const MODEL = process.env.LLM_MODEL;
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_URL = process.env.OPENROUTER_URL;
-
-const isDefinedString = (
-  envVariable: string | undefined,
-): envVariable is string => {
-  return envVariable !== undefined && !!envVariable.trim();
-};
 
 function isChatCompletionResponse(
   data: unknown,

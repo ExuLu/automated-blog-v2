@@ -4,6 +4,7 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import morgan from 'morgan';
 import articleRouter from './routes/articleRoute.js';
+import { isDefinedString } from './validation/isDefinedString.js';
 
 import type { Express, Request, Response } from 'express';
 import type { CorsOptions } from 'cors';
@@ -12,7 +13,7 @@ import type { RateLimitRequestHandler } from 'express-rate-limit';
 const app: Express = express();
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-if (!FRONTEND_ORIGIN)
+if (!isDefinedString(FRONTEND_ORIGIN))
   throw Error('Please provide FRONTEND_ORIGIN to setup cors');
 
 app.set('trust proxy', true);

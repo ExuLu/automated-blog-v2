@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { DEFAULT_TOPIC } from '../constants.js';
 
 let topics: string[] = [];
 const FILE_PATH = path.join(__dirname, 'topics.json');
-
-export const DEFAULT_TOPIC: string = 'AI role in modern technologies';
 
 const isStringArray = (parsedData: unknown): parsedData is string[] =>
   Array.isArray(parsedData) && parsedData.every((el) => typeof el === 'string');
