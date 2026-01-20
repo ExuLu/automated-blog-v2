@@ -1,7 +1,7 @@
 import HttpError from '../errors/HttpError.js';
 import { ArticleInput } from '../types/article.js';
 import { PromptBody } from '../types/llm.js';
-import { isArticleInput } from '../validation/articleValidators.js';
+import { isArticleInput } from '../validation/articleGuards.js';
 import { isDefinedString } from '../validation/isDefinedString.js';
 import {
   isChatCompletionResponse,
