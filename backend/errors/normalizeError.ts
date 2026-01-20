@@ -1,3 +1,4 @@
+import { OpenRouterErrorResponse } from '../types/llm.js';
 import HttpError from './HttpError.js';
 
 type ErrorLike = { status?: unknown; message?: unknown };
@@ -27,4 +28,25 @@ export const normalizeError = (err: unknown, fallbackMessage: string) => {
   }
 
   return { status: 500, message: fallbackMessage };
+};
+
+export const isOpenRouterError = (
+  err: unknown,
+): err is OpenRouterErrorResponse => {
+  if (!err || typeof err !== 'object') return false;
+
+  const error = (err as any).error;
+  const hasValidCode =
+    typeof error?.code === 'number' && Number.isFinite(error.code);
+  const hasValidMetadata =
+    error?.metadata === undefined ||
+    (typeof error.metadata === 'object' && error.metadata !== null);
+
+  return (
+    error &&
+    typeof error === 'object' &&
+    hasValidCode &&
+    typeof error.message === 'string' &&
+    hasValidMetadata
+  );
 };
