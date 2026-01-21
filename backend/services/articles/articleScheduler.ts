@@ -1,6 +1,6 @@
 import nodeCron from 'node-cron';
-import createAndGenerate from './articleService.js';
-import { getRandomTopic } from '../data/topicRepository.js';
+import { generateNewArticle } from './articleService.js';
+import { getRandomTopic } from '../../data/topicRepository.js';
 
 export default function startArticleScheduler(): void {
   const schedulerIsEnabled =
@@ -22,7 +22,7 @@ export default function startArticleScheduler(): void {
     console.log(`Starting scheduled article generation for topic: "${topic}"`);
 
     try {
-      await createAndGenerate(topic);
+      await generateNewArticle(topic);
       console.log('Scheduled article generated successfully');
     } catch (err) {
       console.error('Scheduled article generation failed:', err);

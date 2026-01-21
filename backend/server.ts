@@ -6,7 +6,7 @@ dotenv.config({
 });
 const { default: app } = await import('./app.js');
 const { default: startArticleScheduler } =
-  await import('./services/articleScheduler.js');
+  await import('./services/articles/articleScheduler.js');
 
 import type { Server } from 'http';
 

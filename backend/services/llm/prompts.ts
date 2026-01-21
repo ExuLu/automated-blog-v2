@@ -1,4 +1,4 @@
-import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
+import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../../constants.js';
 
 export const systemPrompt: string = `
 You are an assistant that writes clear, structured blog articles in English
