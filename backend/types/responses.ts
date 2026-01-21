@@ -8,6 +8,7 @@ export type SuccessResBody<TData> = {
 export type ErrorResBody = {
   status: 'fail' | 'error';
   message: string;
+  code?: string;
 };
 
 export type ArticlesResBody = SuccessResBody<{
