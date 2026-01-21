@@ -70,7 +70,7 @@ export const validateArticleTopic = (
 ): asserts req is Request<ParamsDictionary, unknown, TopicInput> => {
   const { topic } = req.body || {};
 
-  if (typeof topic !== 'string') {
+  if (typeof topic !== 'string' || topic.trim().length < 1) {
     res.status(400).json({
       status: 'fail',
       message: 'Please provide topic to generate an article',
@@ -78,17 +78,7 @@ export const validateArticleTopic = (
     return;
   }
 
-  const trimmedTopic = topic.trim();
-
-  if (trimmedTopic.length < 1) {
-    res.status(400).json({
-      status: 'fail',
-      message: 'Topic should not be empty',
-    });
-    return;
-  }
-
-  req.body.topic = trimmedTopic;
+  req.body.topic = topic.trim();
 
   next();
 };
