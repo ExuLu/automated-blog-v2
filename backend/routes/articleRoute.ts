@@ -3,7 +3,7 @@ import {
   getAllArticles,
   createArticle,
   getArticleById,
-  generateAndCreateArticle,
+  generateArticleWithTopic,
 } from '../controllers/articleController.js';
 import {
   validateArticle,
@@ -17,6 +17,6 @@ const router: Router = express.Router();
 
 router.route('/').get(getAllArticles).post(validateArticle, createArticle);
 router.route('/:id').get(validateArticleId, getArticleById);
-router.route('/generate').post(validateArticleTopic, generateAndCreateArticle);
+router.route('/generate').post(validateArticleTopic, generateArticleWithTopic);
 
 export default router;
