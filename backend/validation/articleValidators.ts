@@ -6,6 +6,7 @@ import { ArticleInput, TopicInput } from '../types/article.js';
 import { ErrorResBody } from '../types/responses.js';
 import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
 import { sendError } from '../utils/sendError.js';
+import { ErrorCodes } from '../types/errors.js';
 
 export const validateArticle = (
   req: Request<ParamsDictionary, unknown, Partial<ArticleInput>>,
@@ -15,7 +16,7 @@ export const validateArticle = (
   const { title, content } = req.body || {};
 
   if (typeof title !== 'string' || typeof content !== 'string') {
-    sendError(res, 'ARTICLE_VALIDATION_FAILED');
+    sendError(res, ErrorCodes.articleValidationFailed);
     return;
   }
 
@@ -23,12 +24,12 @@ export const validateArticle = (
   const contentTrimmed = content.trim();
 
   if (titleTrimmed.length < 1 || titleTrimmed.length > TITLE_MAX_LENGTH) {
-    sendError(res, 'ARTICLE_TITLE_VALIDATION_FAILED');
+    sendError(res, ErrorCodes.articleTitleValidationFailed);
     return;
   }
 
   if (contentTrimmed.length < 1 || contentTrimmed.length > CONTENT_MAX_LENGTH) {
-    sendError(res, 'ARTICLE_CONTENT_VALIDATION_FAILED');
+    sendError(res, ErrorCodes.articleContentValidationFailed);
     return;
   }
 
@@ -46,7 +47,7 @@ export const validateArticleId = (
   const { id } = req.params;
 
   if (!uuidValidate(id)) {
-    sendError(res, 'ARTICLE_ID_VALIDATION_FAILED');
+    sendError(res, ErrorCodes.articleIdValidationFailed);
     return;
   }
 
@@ -61,7 +62,7 @@ export const validateArticleTopic = (
   const { topic } = req.body || {};
 
   if (typeof topic !== 'string' || topic.trim().length < 1) {
-    sendError(res, 'ARTICLE_TOPIC_VALIDATION_FAILED');
+    sendError(res, ErrorCodes.articleTopicValidationFailed);
     return;
   }
 

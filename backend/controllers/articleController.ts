@@ -15,6 +15,7 @@ import {
   ErrorResBody,
 } from '../types/responses.js';
 import { sendError } from '../utils/sendError.js';
+import { ErrorCodes } from '../types/errors.js';
 
 export const getAllArticles = (
   req: Request,
@@ -37,7 +38,7 @@ export const getArticleById = (
   const article = getArticle(req.params.id);
 
   if (!article) {
-    sendError(res, 'ARTICLE_NOT_FOUND');
+    sendError(res, ErrorCodes.articleNotFound);
     return;
   }
 
@@ -67,7 +68,7 @@ export const createArticle = async (
     });
   } catch (err) {
     console.error('Failed to create article:', err);
-    const code = normalizeErrorCode(err, 'ARTICLE_CREATION_FAILED');
+    const code = normalizeErrorCode(err, ErrorCodes.articleCreationFailed);
     sendError(res, code);
   }
 };
@@ -89,7 +90,7 @@ export const generateArticleWithTopic = async (
     });
   } catch (err) {
     console.error('Failed to create article:', err);
-    const code = normalizeErrorCode(err, 'ARTICLE_GENERATION_FAILED');
+    const code = normalizeErrorCode(err, ErrorCodes.articleGenerationFailed);
     sendError(res, code);
   }
 };

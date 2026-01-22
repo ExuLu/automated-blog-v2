@@ -7,15 +7,15 @@ export default function startArticleScheduler(): void {
     process.env.ENABLE_DAILY_GENERATION?.toLowerCase() === 'true';
   const schedule = process.env.ARTICLE_CRON ?? '0 9 * * *';
 
-  if (!nodeCron.validate(schedule))
-    throw new Error(`Invalid cron: ${schedule}`);
-
   if (!schedulerIsEnabled) {
     console.log(
       'Article scheduler is disabled (set ENABLE_DAILY_GENERATION=true to enable)',
     );
     return;
   }
+
+  if (!nodeCron.validate(schedule))
+    throw new Error(`Invalid cron: ${schedule}`);
 
   nodeCron.schedule(schedule, async () => {
     const topic = getRandomTopic();

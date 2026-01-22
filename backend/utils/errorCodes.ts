@@ -14,6 +14,26 @@ export const errorCodes: ErrorsMap = {
     statusCode: 500,
     message: 'Failed to create article',
   },
+  ARTICLE_SAVE_FAILED: {
+    statusCode: 500,
+    message: 'Failed to save article',
+  },
+  LLM_REQUEST_FAILED: {
+    statusCode: 502,
+    message: 'LLM fetch request failed',
+  },
+  INVALID_LLM_RESPONSE: {
+    statusCode: 500,
+    message: 'Unexpected OpenRouter response format',
+  },
+  INVALID_ARTICLE_FORMAT: {
+    statusCode: 500,
+    message: 'LLM returned wrong article format',
+  },
+  ARTICLE_PARSE_FAILED: {
+    statusCode: 500,
+    message: 'Failed to parse article JSON from LLM',
+  },
   ARTICLE_GENERATION_FAILED: {
     statusCode: 500,
     message: 'Failed to generate article',

@@ -6,12 +6,13 @@ import {
   getAllArticlesRepo,
   getArticleByIdRepo,
 } from '../../data/articleRepository.js';
-import HttpError from '../../errors/ApiError.js';
+import ApiError from '../../errors/ApiError.js';
 import { DEFAULT_TOPIC } from '../../constants.js';
 
 import { isDefinedString } from '../../validation/isDefinedString.js';
 
 import type { ArticleInput, ArticleRecord } from '../../types/article.js';
+import { ErrorCodes } from '../../types/errors.js';
 
 let llmClient: LlmClient | null = null;
 
@@ -53,10 +54,7 @@ export async function createNewArticle(
     await saveArticleToFile();
   } catch (err) {
     removeArticleAfterError();
-    throw new HttpError(
-      500,
-      `Failed to save article because of: ${String(err)}`,
-    );
+    throw new ApiError(ErrorCodes.articleSaveFailed);
   }
 
   return newArticle;

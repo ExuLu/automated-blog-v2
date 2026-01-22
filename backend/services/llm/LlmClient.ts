@@ -1,4 +1,4 @@
-import HttpError from '../../errors/ApiError.js';
+import ApiError from '../../errors/ApiError.js';
 import { systemPrompt, userPrompt } from './prompts.js';
 
 import { isArticleInput } from '../../validation/articleGuards.js';
@@ -12,6 +12,7 @@ import type {
   OpenRouterChatCompletionResponse,
   PromptBody,
 } from '../../types/llm.js';
+import { ErrorCodes } from '../../types/errors.js';
 
 export default class LlmClient {
   readonly model: string;
@@ -51,25 +52,32 @@ export default class LlmClient {
 
       return response;
     } catch (err) {
-      throw new HttpError(502, `LLM fetch failed because of: ${String(err)}`);
+      console.error(`OpenRouter request failed because of: ${String(err)}`);
+      throw new ApiError(ErrorCodes.llmRequestFailed);
     }
   }
 
   private async getResponseData(
     response: Response,
   ): Promise<OpenRouterChatCompletionResponse> {
-    const data: unknown = await response.json();
+    let data: unknown;
+    try {
+      data = await response.json();
+    } catch (err) {
+      throw new ApiError(ErrorCodes.llmRequestFailed);
+    }
 
     if (!response.ok) {
-      const message = isOpenRouterErrorResponse(data)
-        ? data.error.message
+      const errorLog = isOpenRouterErrorResponse(data)
+        ? `OpenRouter request failed because of: ${String(data.error)}`
         : `OpenRouter request failed with status ${response.status}`;
+      console.error(errorLog);
 
-      throw new HttpError(response.status, message);
+      throw new ApiError(ErrorCodes.llmRequestFailed);
     }
 
     if (!isChatCompletionResponse(data)) {
-      throw new Error('Unexpected OpenRouter response format');
+      throw new ApiError(ErrorCodes.invalidLlmResponse);
     }
 
     return data;
@@ -79,19 +87,19 @@ export default class LlmClient {
     const rawContent = data.choices[0].message.content;
 
     if (!rawContent || rawContent.trim() === '') {
-      throw new Error('LLM returned empty content');
+      throw new ApiError(ErrorCodes.invalidArticleFormat);
     }
 
     try {
       const article: unknown = JSON.parse(rawContent);
 
       if (!isArticleInput(article))
-        throw new Error('LLM returned wrong article format');
+        throw new ApiError(ErrorCodes.invalidArticleFormat);
 
       return article;
     } catch (err) {
-      console.log('Raw model content:', rawContent);
-      throw new Error('Failed to parse article JSON from LLM');
+      console.error('Failed to parse article. Raw model content:', rawContent);
+      throw new ApiError(ErrorCodes.articleParseFailed);
     }
   }
 
