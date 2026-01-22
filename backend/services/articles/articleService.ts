@@ -6,7 +6,7 @@ import {
   getAllArticlesRepo,
   getArticleByIdRepo,
 } from '../../data/articleRepository.js';
-import HttpError from '../../errors/HttpError.js';
+import HttpError from '../../errors/ApiError.js';
 import { DEFAULT_TOPIC } from '../../constants.js';
 
 import { isDefinedString } from '../../validation/isDefinedString.js';

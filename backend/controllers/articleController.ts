@@ -4,7 +4,7 @@ import {
   listArticles,
   generateNewArticle,
 } from '../services/articles/articleService.js';
-import { normalizeError } from '../errors/normalizeError.js';
+import { normalizeErrorCode } from '../errors/normalizeError.js';
 
 import type { Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
@@ -67,16 +67,8 @@ export const createArticle = async (
     });
   } catch (err) {
     console.error('Failed to create article:', err);
-
-    const { status, message } = normalizeError(
-      err,
-      'There was an error while saving an article. Please try again',
-    );
-
-    res.status(status).json({
-      status: 'error',
-      message,
-    });
+    const code = normalizeErrorCode(err, 'ARTICLE_CREATION_FAILED');
+    sendError(res, code);
   }
 };
 
@@ -96,6 +88,8 @@ export const generateArticleWithTopic = async (
       },
     });
   } catch (err) {
-    sendError(res, 'ARTICLE_GENERATION_FAILED');
+    console.error('Failed to create article:', err);
+    const code = normalizeErrorCode(err, 'ARTICLE_GENERATION_FAILED');
+    sendError(res, code);
   }
 };

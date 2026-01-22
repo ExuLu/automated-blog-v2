@@ -10,6 +10,10 @@ export const errorCodes: ErrorsMap = {
     statusCode: 404,
     message: 'Api route not found',
   },
+  ARTICLE_CREATION_FAILED: {
+    statusCode: 500,
+    message: 'Failed to create article',
+  },
   ARTICLE_GENERATION_FAILED: {
     statusCode: 500,
     message: 'Failed to generate article',

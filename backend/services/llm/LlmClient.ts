@@ -1,4 +1,4 @@
-import HttpError from '../../errors/HttpError.js';
+import HttpError from '../../errors/ApiError.js';
 import { systemPrompt, userPrompt } from './prompts.js';
 
 import { isArticleInput } from '../../validation/articleGuards.js';
