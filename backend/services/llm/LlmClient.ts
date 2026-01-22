@@ -9,25 +9,26 @@ import {
 
 import type { ArticleInput } from '../../types/article.js';
 import type {
+  LlmConfig,
   OpenRouterChatCompletionResponse,
   PromptBody,
 } from '../../types/llm.js';
 import { ErrorCodes } from '../../types/errors.js';
 
 export default class LlmClient {
-  readonly model: string;
+  readonly llmModel: string;
   readonly apiKey: string;
-  readonly url: string;
+  readonly apiUrl: string;
 
-  constructor(llmConfig: { model: string; apiKey: string; url: string }) {
-    this.model = llmConfig.model;
+  constructor(llmConfig: LlmConfig) {
+    this.llmModel = llmConfig.llmModel;
     this.apiKey = llmConfig.apiKey;
-    this.url = llmConfig.url;
+    this.apiUrl = llmConfig.apiUrl;
   }
 
   private getPromptBody(topic: string): PromptBody {
     return {
-      model: this.model,
+      model: this.llmModel,
       messages: [
         { role: 'system', content: systemPrompt },
         {
@@ -41,7 +42,7 @@ export default class LlmClient {
 
   private async request(body: PromptBody): Promise<Response> {
     try {
-      const response: Response = await fetch(this.url, {
+      const response: Response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.apiKey}`,

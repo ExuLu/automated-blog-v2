@@ -9,29 +9,16 @@ import {
 import ApiError from '../../errors/ApiError.js';
 import { DEFAULT_TOPIC } from '../../constants.js';
 
-import { isDefinedString } from '../../validation/isDefinedString.js';
-
 import type { ArticleInput, ArticleRecord } from '../../types/article.js';
 import { ErrorCodes } from '../../types/errors.js';
+import { llmConfigs } from '../../config/index.js';
 
 let llmClient: LlmClient | null = null;
 
 const getLlmClient = (): LlmClient => {
   if (llmClient) return llmClient;
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const url = process.env.OPENROUTER_URL;
-  const llmModel = process.env.LLM_MODEL;
-
-  if (
-    !isDefinedString(apiKey) ||
-    !isDefinedString(url) ||
-    !isDefinedString(llmModel)
-  ) {
-    throw new Error('Please add correct environment variables');
-  }
-
-  llmClient = new LlmClient({ model: llmModel, apiKey, url });
+  llmClient = new LlmClient(llmConfigs);
   return llmClient;
 };
 
