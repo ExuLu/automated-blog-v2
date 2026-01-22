@@ -4,7 +4,7 @@ import {
   listArticles,
   generateNewArticle,
 } from '../services/articles/articleService.js';
-import { normalizeError } from '../errors/normalizeError.js';
+import { normalizeErrorCode } from '../errors/normalizeError.js';
 
 import type { Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
@@ -14,6 +14,8 @@ import {
   ArticlesResBody,
   ErrorResBody,
 } from '../types/responses.js';
+import { sendError } from '../utils/sendError.js';
+import { ErrorCodes } from '../types/errors.js';
 
 export const getAllArticles = (
   req: Request,
@@ -36,10 +38,8 @@ export const getArticleById = (
   const article = getArticle(req.params.id);
 
   if (!article) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Article is not found',
-    });
+    sendError(res, ErrorCodes.articleNotFound);
+    return;
   }
 
   res.status(200).json({
@@ -68,16 +68,8 @@ export const createArticle = async (
     });
   } catch (err) {
     console.error('Failed to create article:', err);
-
-    const { status, message } = normalizeError(
-      err,
-      'There was an error while saving an article. Please try again',
-    );
-
-    res.status(status).json({
-      status: 'error',
-      message,
-    });
+    const code = normalizeErrorCode(err, ErrorCodes.articleCreationFailed);
+    sendError(res, code);
   }
 };
 
@@ -97,16 +89,8 @@ export const generateArticleWithTopic = async (
       },
     });
   } catch (err) {
-    console.error('Generation failed: ', err);
-
-    const { status, message } = normalizeError(
-      err,
-      'Failed to generate and save article. Please try again later',
-    );
-
-    res.status(status).json({
-      status: 'error',
-      message,
-    });
+    console.error('Failed to create article:', err);
+    const code = normalizeErrorCode(err, ErrorCodes.articleGenerationFailed);
+    sendError(res, code);
   }
 };

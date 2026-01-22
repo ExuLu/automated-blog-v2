@@ -4,22 +4,20 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import morgan from 'morgan';
 import articleRouter from './routes/articleRoute.js';
-import { isDefinedString } from './validation/isDefinedString.js';
 
 import type { Express, Request, Response } from 'express';
 import type { CorsOptions } from 'cors';
 import type { RateLimitRequestHandler } from 'express-rate-limit';
+import { sendError } from './utils/sendError.js';
+import { ErrorCodes } from './types/errors.js';
+import { frontendOrigin } from './config/index.js';
 
 const app: Express = express();
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
-
-if (!isDefinedString(FRONTEND_ORIGIN))
-  throw Error('Please provide FRONTEND_ORIGIN to setup cors');
 
 app.set('trust proxy', true);
 
 const corsOptions: CorsOptions = {
-  origin: FRONTEND_ORIGIN,
+  origin: frontendOrigin,
   methods: ['GET', 'POST'],
 };
 
@@ -40,10 +38,7 @@ app.use(express.json({ limit: '10kb' }));
 
 app.use('/api/articles', articleRouter);
 app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    status: 'fail',
-    message: 'Api route not found',
-  });
+  sendError(res, ErrorCodes.routeNotFound);
 });
 
 export default app;

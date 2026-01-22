@@ -1,14 +1,9 @@
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import path from 'path';
-dotenv.config({
-  path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env'),
-});
+import type { Server } from 'http';
+import './config/index.js';
+
 const { default: app } = await import('./app.js');
 const { default: startArticleScheduler } =
   await import('./services/articles/articleScheduler.js');
-
-import type { Server } from 'http';
 
 process.on('uncaughtException', (err: Error) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');

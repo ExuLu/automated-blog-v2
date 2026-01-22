@@ -1,3 +1,9 @@
+export type LlmConfig = {
+  apiKey: string;
+  apiUrl: string;
+  llmModel: string;
+};
+
 export type ChatMessage = {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string;
