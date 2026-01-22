@@ -14,6 +14,7 @@ import {
   ArticlesResBody,
   ErrorResBody,
 } from '../types/responses.js';
+import { sendError } from '../utils/sendError.js';
 
 export const getAllArticles = (
   req: Request,
@@ -36,10 +37,8 @@ export const getArticleById = (
   const article = getArticle(req.params.id);
 
   if (!article) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Article is not found',
-    });
+    sendError(res, 'ARTICLE_NOT_FOUND');
+    return;
   }
 
   res.status(200).json({
@@ -97,16 +96,6 @@ export const generateArticleWithTopic = async (
       },
     });
   } catch (err) {
-    console.error('Generation failed: ', err);
-
-    const { status, message } = normalizeError(
-      err,
-      'Failed to generate and save article. Please try again later',
-    );
-
-    res.status(status).json({
-      status: 'error',
-      message,
-    });
+    sendError(res, 'ARTICLE_GENERATION_FAILED');
   }
 };

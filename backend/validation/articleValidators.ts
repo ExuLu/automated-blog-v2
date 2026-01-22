@@ -5,6 +5,7 @@ import type { ParamsDictionary } from 'express-serve-static-core';
 import { ArticleInput, TopicInput } from '../types/article.js';
 import { ErrorResBody } from '../types/responses.js';
 import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
+import { sendError } from '../utils/sendError.js';
 
 export const validateArticle = (
   req: Request<ParamsDictionary, unknown, Partial<ArticleInput>>,
@@ -14,10 +15,7 @@ export const validateArticle = (
   const { title, content } = req.body || {};
 
   if (typeof title !== 'string' || typeof content !== 'string') {
-    res.status(400).json({
-      status: 'fail',
-      message: 'The article should contain title and content',
-    });
+    sendError(res, 'ARTICLE_VALIDATION_FAILED');
     return;
   }
 
@@ -25,18 +23,12 @@ export const validateArticle = (
   const contentTrimmed = content.trim();
 
   if (titleTrimmed.length < 1 || titleTrimmed.length > TITLE_MAX_LENGTH) {
-    res.status(400).json({
-      status: 'fail',
-      message: `Article title should contain from 1 to ${TITLE_MAX_LENGTH} characters`,
-    });
+    sendError(res, 'ARTICLE_TITLE_VALIDATION_FAILED');
     return;
   }
 
   if (contentTrimmed.length < 1 || contentTrimmed.length > CONTENT_MAX_LENGTH) {
-    res.status(400).json({
-      status: 'fail',
-      message: `Article content should contain from 1 to ${CONTENT_MAX_LENGTH} characters`,
-    });
+    sendError(res, 'ARTICLE_CONTENT_VALIDATION_FAILED');
     return;
   }
 
@@ -54,10 +46,8 @@ export const validateArticleId = (
   const { id } = req.params;
 
   if (!uuidValidate(id)) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Article id is not valid',
-    });
+    sendError(res, 'ARTICLE_ID_VALIDATION_FAILED');
+    return;
   }
 
   next();
@@ -71,10 +61,7 @@ export const validateArticleTopic = (
   const { topic } = req.body || {};
 
   if (typeof topic !== 'string' || topic.trim().length < 1) {
-    res.status(400).json({
-      status: 'fail',
-      message: 'Please provide topic to generate an article',
-    });
+    sendError(res, 'ARTICLE_TOPIC_VALIDATION_FAILED');
     return;
   }
 

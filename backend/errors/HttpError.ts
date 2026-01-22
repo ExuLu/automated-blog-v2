@@ -1,9 +1,8 @@
-export default class HttpError extends Error {
-  status: number;
+export default class ApiError extends Error {
+  code: string;
 
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'HttpError';
-    this.status = status;
+  constructor(code: string) {
+    super();
+    this.code = code;
   }
 }

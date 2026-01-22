@@ -9,6 +9,7 @@ import { isDefinedString } from './validation/isDefinedString.js';
 import type { Express, Request, Response } from 'express';
 import type { CorsOptions } from 'cors';
 import type { RateLimitRequestHandler } from 'express-rate-limit';
+import { sendError } from './utils/sendError.js';
 
 const app: Express = express();
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
@@ -40,10 +41,7 @@ app.use(express.json({ limit: '10kb' }));
 
 app.use('/api/articles', articleRouter);
 app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    status: 'fail',
-    message: 'Api route not found',
-  });
+  sendError(res, 'ROUTE_NOT_FOUND');
 });
 
 export default app;
