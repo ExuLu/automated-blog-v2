@@ -16,6 +16,7 @@ import {
 } from '../types/responses.js';
 import { sendError } from '../utils/sendError.js';
 import { ErrorCodes } from '../types/errors.js';
+import sendSuccessResponse from '../utils/sendSuccess.js';
 
 export const getAllArticles = (
   req: Request,
@@ -23,12 +24,7 @@ export const getAllArticles = (
 ) => {
   const articles = listArticles();
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      articles,
-    },
-  });
+  sendSuccessResponse(res, 200, { articles });
 };
 
 export const getArticleById = (
@@ -42,12 +38,7 @@ export const getArticleById = (
     return;
   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      article,
-    },
-  });
+  sendSuccessResponse(res, 200, { article });
 };
 
 export const createArticle = async (
@@ -60,12 +51,7 @@ export const createArticle = async (
       content: req.body.content,
     });
 
-    res.status(201).json({
-      status: 'success',
-      data: {
-        article: newArticle,
-      },
-    });
+    sendSuccessResponse(res, 201, { article: newArticle });
   } catch (err) {
     console.error('Failed to create article:', err);
     const code = normalizeErrorCode(err, ErrorCodes.articleCreationFailed);
@@ -82,12 +68,7 @@ export const generateArticleWithTopic = async (
   try {
     const newArticle = await generateNewArticle(topic);
 
-    res.status(201).json({
-      status: 'success',
-      data: {
-        article: newArticle,
-      },
-    });
+    sendSuccessResponse(res, 201, { article: newArticle });
   } catch (err) {
     console.error('Failed to create article:', err);
     const code = normalizeErrorCode(err, ErrorCodes.articleGenerationFailed);
