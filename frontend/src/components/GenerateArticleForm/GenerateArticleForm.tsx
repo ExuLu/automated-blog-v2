@@ -1,38 +1,22 @@
 import { useState } from 'react';
 
 import ErrorComponent from '../Error/Error';
-import { generateAndAddArticle } from '../../api/articlesApi';
+import useCreateArticle from '../../hooks/useCreateArticle';
 
 import styles from './GenerateArticleForm.module.css';
-import type { AppError } from '../../types/error';
 
-type GenerateArticleFormProps = { submitAction: () => Promise<void> };
-
-export default function GenerateArticleForm({
-  submitAction,
-}: GenerateArticleFormProps) {
+export default function GenerateArticleForm() {
   const [topic, setTopic] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<AppError>(null);
+  const { generateArticle, error, isGenerating, resetError } =
+    useCreateArticle();
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!topic.trim()) return;
 
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await generateAndAddArticle(topic);
-      submitAction();
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to generate article'
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    resetError();
+    generateArticle(topic);
 
     setTopic('');
   };
@@ -50,16 +34,16 @@ export default function GenerateArticleForm({
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder='Enter topic for the next article'
-            disabled={isLoading}
+            disabled={isGenerating}
           />
         </label>
 
         <button
           type='submit'
           className={styles.button}
-          disabled={isLoading || !topic.trim()}
+          disabled={isGenerating || !topic.trim()}
         >
-          {isLoading ? 'Generating…' : 'Generate'}
+          {isGenerating ? 'Generating…' : 'Generate'}
         </button>
       </form>
     </>
