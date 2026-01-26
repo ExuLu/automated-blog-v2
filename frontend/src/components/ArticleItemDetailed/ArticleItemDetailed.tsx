@@ -1,5 +1,3 @@
-import { useParams } from 'react-router-dom';
-
 import BackLink from '../BackLink/BackLink';
 import Error from '../Error/Error';
 import Spinner from '../Spinner/Spinner';
@@ -8,11 +6,10 @@ import useArticle from '../../hooks/useArticle';
 import styles from './ArticleItemDetailed.module.css';
 
 const ArticleItemDetailed = () => {
-  const { id: articleId } = useParams<{ id: string }>();
-  const { article, isLoading, error } = useArticle(articleId!);
+  const { article, isLoading, error } = useArticle();
 
   if (isLoading) return <Spinner />;
-  if (error) return <Error message={error} />;
+  if (error) return <Error message={error.message} />;
   if (!article) return <p className={styles.notFound}>Article not found</p>;
 
   return (
