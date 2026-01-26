@@ -6,7 +6,7 @@ export default function useArticles() {
     data: articles,
     error,
     isLoading,
-  } = useQuery({ queryKey: ['cabins'], queryFn: getAllArticles });
+  } = useQuery({ queryKey: ['articles'], queryFn: getAllArticles });
 
   return { articles, error, isLoading };
 }
