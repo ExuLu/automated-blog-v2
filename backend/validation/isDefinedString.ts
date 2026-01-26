@@ -1,5 +1,7 @@
+import { EnvVariableSchema } from './schemas/envVarSchema.js';
+
 export const isDefinedString = (
   envVariable: string | undefined,
 ): envVariable is string => {
-  return envVariable !== undefined && !!envVariable.trim();
+  return EnvVariableSchema.parse(envVariable);
 };
