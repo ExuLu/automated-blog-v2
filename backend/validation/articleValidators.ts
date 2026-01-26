@@ -1,4 +1,5 @@
 import { validate as uuidValidate } from 'uuid';
+import * as z from 'zod';
 
 import type { NextFunction, Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
@@ -13,28 +14,53 @@ export const validateArticle = (
   res: Response<ErrorResBody>,
   next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, ArticleInput> => {
+  const TitleSchema = z
+    .string({ message: ErrorCodes.articleValidationFailed })
+    .trim()
+    .min(1, {
+      message: ErrorCodes.articleTitleValidationFailed,
+    })
+    .max(TITLE_MAX_LENGTH, {
+      message: ErrorCodes.articleTitleValidationFailed,
+    });
+
+  const ContentSchema = z
+    .string({ message: ErrorCodes.articleValidationFailed })
+    .trim()
+    .min(1, {
+      message: ErrorCodes.articleContentValidationFailed,
+    })
+    .max(CONTENT_MAX_LENGTH, {
+      message: ErrorCodes.articleContentValidationFailed,
+    });
+
   const { title, content } = req.body || {};
 
-  if (typeof title !== 'string' || typeof content !== 'string') {
-    sendError(res, ErrorCodes.articleValidationFailed);
+  const validTitle = TitleSchema.safeParse(title);
+  const validContent = ContentSchema.safeParse(content);
+
+  if (!validContent.success) {
+    const errorMessage = validContent.error?.issues[0].message;
+    let errorCode: ErrorCodes;
+    errorCode = errorMessage
+      ? (errorMessage as ErrorCodes)
+      : ErrorCodes.internalError;
+    sendError(res, errorCode);
     return;
   }
 
-  const titleTrimmed = title.trim();
-  const contentTrimmed = content.trim();
-
-  if (titleTrimmed.length < 1 || titleTrimmed.length > TITLE_MAX_LENGTH) {
-    sendError(res, ErrorCodes.articleTitleValidationFailed);
+  if (!validTitle.success) {
+    const errorMessage = validTitle.error?.issues[0].message;
+    let errorCode: ErrorCodes;
+    errorCode = errorMessage
+      ? (errorMessage as ErrorCodes)
+      : ErrorCodes.internalError;
+    sendError(res, errorCode);
     return;
   }
 
-  if (contentTrimmed.length < 1 || contentTrimmed.length > CONTENT_MAX_LENGTH) {
-    sendError(res, ErrorCodes.articleContentValidationFailed);
-    return;
-  }
-
-  req.body.title = titleTrimmed;
-  req.body.content = contentTrimmed;
+  req.body.title = validTitle.data;
+  req.body.content = validContent.data;
 
   next();
 };
