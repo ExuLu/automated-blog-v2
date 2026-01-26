@@ -1,4 +1,4 @@
-import { EnvVariableSchema } from './schemas/envVarSchema.js';
+import { EnvVariableSchema } from './schemas/EnvVariableSchema.js';
 
 export const isDefinedString = (
   envVariable: string | undefined,

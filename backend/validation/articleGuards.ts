@@ -1,13 +1,6 @@
-import { ArticleInput } from "../types/article.js";
+import { ArticleInputSchema } from './schemas/ArticleInputSchema.js';
 
-export const isArticleInput = (article: unknown): article is ArticleInput => {
-  if (!article || typeof article !== 'object') return false;
-  const partialArticleInput = article as Partial<ArticleInput>;
+import type { ArticleInput } from '../types/article.js';
 
-  return (
-    typeof partialArticleInput.title === 'string' &&
-    typeof partialArticleInput.content === 'string' &&
-    !!partialArticleInput.content.trim() &&
-    !!partialArticleInput.title.trim()
-  );
-};
+export const isArticleInput = (article: unknown): article is ArticleInput =>
+  ArticleInputSchema.safeParse(article).success;
