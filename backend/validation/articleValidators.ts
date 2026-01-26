@@ -1,41 +1,30 @@
 import { validate as uuidValidate } from 'uuid';
 
+import { CreateArticleReqBodySchema } from './schemas/CreateArticleReqBodySchema.js';
+import { GenerateArticleReqBodySchema } from './schemas/GenerateArticleReqBodySchema.js';
+import { sendError } from '../utils/sendError.js';
+
+import { ErrorCodes } from '../types/errors.js';
 import type { NextFunction, Request, Response } from 'express';
 import type { ParamsDictionary } from 'express-serve-static-core';
-import { ArticleInput, TopicInput } from '../types/article.js';
-import { ErrorResBody } from '../types/responses.js';
-import { CONTENT_MAX_LENGTH, TITLE_MAX_LENGTH } from '../constants.js';
-import { sendError } from '../utils/sendError.js';
-import { ErrorCodes } from '../types/errors.js';
+import type { ArticleInput, TopicInput } from '../types/article.js';
+import type { ErrorResBody } from '../types/responses.js';
 
 export const validateArticle = (
   req: Request<ParamsDictionary, unknown, Partial<ArticleInput>>,
   res: Response<ErrorResBody>,
   next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, ArticleInput> => {
-  const { title, content } = req.body || {};
+  const validBody = CreateArticleReqBodySchema.safeParse(req.body);
 
-  if (typeof title !== 'string' || typeof content !== 'string') {
-    sendError(res, ErrorCodes.articleValidationFailed);
+  if (!validBody.success) {
+    const errCode = validBody.error.issues[0].message as ErrorCodes;
+    sendError(res, errCode);
+
     return;
   }
 
-  const titleTrimmed = title.trim();
-  const contentTrimmed = content.trim();
-
-  if (titleTrimmed.length < 1 || titleTrimmed.length > TITLE_MAX_LENGTH) {
-    sendError(res, ErrorCodes.articleTitleValidationFailed);
-    return;
-  }
-
-  if (contentTrimmed.length < 1 || contentTrimmed.length > CONTENT_MAX_LENGTH) {
-    sendError(res, ErrorCodes.articleContentValidationFailed);
-    return;
-  }
-
-  req.body.title = titleTrimmed;
-  req.body.content = contentTrimmed;
-
+  req.body = validBody.data;
   next();
 };
 
@@ -59,14 +48,15 @@ export const validateArticleTopic = (
   res: Response<ErrorResBody>,
   next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, TopicInput> => {
-  const { topic } = req.body || {};
+  const validBody = GenerateArticleReqBodySchema.safeParse(req.body);
 
-  if (typeof topic !== 'string' || topic.trim().length < 1) {
-    sendError(res, ErrorCodes.articleTopicValidationFailed);
+  if (!validBody.success) {
+    const errCode = validBody.error.issues[0].message as ErrorCodes;
+    sendError(res, errCode);
     return;
   }
 
-  req.body.topic = topic.trim();
+  req.body = validBody.data;
 
   next();
 };
