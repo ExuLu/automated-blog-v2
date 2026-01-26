@@ -1,6 +1,7 @@
 import { validate as uuidValidate } from 'uuid';
 
 import { CreateArticleReqBodySchema } from './schemas/CreateArticleReqBodySchema.js';
+import { GenerateArticleReqBodySchema } from './schemas/GenerateArticleReqBodySchema.js';
 import { sendError } from '../utils/sendError.js';
 
 import { ErrorCodes } from '../types/errors.js';
@@ -47,14 +48,15 @@ export const validateArticleTopic = (
   res: Response<ErrorResBody>,
   next: NextFunction,
 ): asserts req is Request<ParamsDictionary, unknown, TopicInput> => {
-  const { topic } = req.body || {};
+  const validBody = GenerateArticleReqBodySchema.safeParse(req.body);
 
-  if (typeof topic !== 'string' || topic.trim().length < 1) {
-    sendError(res, ErrorCodes.articleTopicValidationFailed);
+  if (!validBody.success) {
+    const errCode = validBody.error.issues[0].message as ErrorCodes;
+    sendError(res, errCode);
     return;
   }
 
-  req.body.topic = topic.trim();
+  req.body = validBody.data;
 
   next();
 };
