@@ -2,29 +2,42 @@ import { useState } from 'react';
 
 import ErrorComponent from '../Error/Error';
 import useCreateArticle from '../../hooks/useCreateArticle';
+import { TopicSchema } from '../../types/schemas/TopicSchema';
 
 import styles from './GenerateArticleForm.module.css';
 
 export default function GenerateArticleForm() {
   const [topic, setTopic] = useState<string>('');
+  const [validationError, setValidationError] = useState<string | null>(null);
   const { generateArticle, error, isGenerating, resetError } =
     useCreateArticle();
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!topic.trim()) return;
+    const validTopic = TopicSchema.safeParse(topic);
+    if (!validTopic.success) {
+      setValidationError(
+        validTopic.error.issues[0]?.message ?? 'Invalid topic',
+      );
+      return;
+    }
 
+    const normalizedTopic = validTopic.data;
+    setValidationError(null);
     resetError();
-    generateArticle(topic);
+    generateArticle(normalizedTopic);
 
     setTopic('');
   };
 
   return (
     <>
-      {error && (
-        <ErrorComponent isMainPage={true} message={error.message ?? 'Error'} />
+      {(validationError || error) && (
+        <ErrorComponent
+          isMainPage={true}
+          message={validationError ?? error?.message ?? 'Error'}
+        />
       )}
 
       <form className={styles.form} onSubmit={handleSubmit}>
