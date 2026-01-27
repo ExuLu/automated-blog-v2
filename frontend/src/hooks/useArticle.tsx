@@ -20,8 +20,6 @@ export default function useArticle(articleId?: string) {
     queryKey: ['article', articleId],
     queryFn: () => getArticleById(articleId!),
     enabled: !!articleId,
-    staleTime: 30 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
     placeholderData: () => {
       const articles = queryClient.getQueryData<Article[]>(['articles']);
       return articles?.find((a) => a.id === articleId);
