@@ -1,21 +1,22 @@
-import { getArticleById } from '../api/articlesApi';
-
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-export default function useArticle() {
-  const { id } = useParams();
-  if (!id) return { article: null };
+import { getArticleById } from '../api/articlesApi';
 
-  const articleId = id;
+import type { Article } from '../types/article';
+import type { ApiError } from '../types/error';
+
+export default function useArticle() {
+  const { id: articleId } = useParams();
 
   const {
     data: article,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<Article, ApiError>({
     queryKey: ['articles', articleId],
-    queryFn: () => getArticleById(articleId),
+    queryFn: () => getArticleById(articleId!),
+    enabled: !!articleId,
   });
 
   return { article, error, isLoading };

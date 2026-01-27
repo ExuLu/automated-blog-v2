@@ -1,18 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { generateAndAddArticle } from '../api/articlesApi';
-import { useState } from 'react';
+
+import type { Article } from '../types/article';
+import type { ApiError } from '../types/error';
 
 export default function useCreateArticle() {
-  const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const { mutate: generateArticle, isPending: isGenerating } = useMutation({
+  const {
+    mutate: generateArticle,
+    isPending: isGenerating,
+    error,
+    reset,
+  } = useMutation<Article, ApiError, string>({
     mutationFn: generateAndAddArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['articles'] });
-    },
-    onError: (error) => {
-      setError(error.message);
+      reset();
     },
   });
 
@@ -20,6 +25,6 @@ export default function useCreateArticle() {
     generateArticle,
     isGenerating,
     error,
-    resetError: () => setError(null),
+    resetError: reset,
   };
 }

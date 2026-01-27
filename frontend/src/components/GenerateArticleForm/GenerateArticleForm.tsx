@@ -23,7 +23,9 @@ export default function GenerateArticleForm() {
 
   return (
     <>
-      {error && <ErrorComponent isMainPage={true} message={error} />}
+      {error && (
+        <ErrorComponent isMainPage={true} message={error.message ?? 'Error'} />
+      )}
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.label}>
