@@ -5,7 +5,9 @@ import { useParams } from 'react-router-dom';
 
 export default function useArticle() {
   const { id } = useParams();
-  const articleId = id as string;
+  if (!id) return { article: null };
+
+  const articleId = id;
 
   const {
     data: article,
