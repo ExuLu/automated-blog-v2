@@ -2,11 +2,13 @@ import BackLink from '../BackLink/BackLink';
 import Error from '../Error/Error';
 import Spinner from '../Spinner/Spinner';
 import useArticle from '../../hooks/useArticle';
+import { useParams } from 'react-router-dom';
 
 import styles from './ArticleItemDetailed.module.css';
 
 const ArticleItemDetailed = () => {
-  const { article, isLoading, error } = useArticle();
+  const { id } = useParams();
+  const { article, isLoading, error } = useArticle(id);
 
   if (isLoading) return <Spinner />;
   if (error) return <Error message={error.message} />;

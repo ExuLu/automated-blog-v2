@@ -1,13 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
 
 import { getArticleById } from '../services/articlesApi';
 
 import type { Article } from '../types/article';
 import type { ApiError } from '../types/error';
 
-export default function useArticle() {
-  const { id: articleId } = useParams();
+export default function useArticle(articleId?: string) {
   const queryClient = useQueryClient();
 
   if (!articleId) {
