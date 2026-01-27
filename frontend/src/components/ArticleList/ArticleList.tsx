@@ -7,19 +7,20 @@ import useArticles from '../../hooks/useArticles';
 import styles from './ArticleList.module.css';
 
 const ArticleList = () => {
-  const { articles, error, isLoading, refetch } = useArticles();
+  const { articles, error, isLoading } = useArticles();
 
   if (isLoading) return <Spinner />;
-  if (error) return <Error message={error} isMainPage={true} />;
+  if (error) return <Error message={error.message} isMainPage={true} />;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Automated Blog</h1>
-      <GenerateArticleForm submitAction={refetch} />
+      <GenerateArticleForm />
       <div className={styles.list}>
-        {articles.map((article) => (
-          <ArticleListItem key={article.id} article={article} />
-        ))}
+        {articles &&
+          articles.map((article) => (
+            <ArticleListItem key={article.id} article={article} />
+          ))}
       </div>
     </div>
   );
