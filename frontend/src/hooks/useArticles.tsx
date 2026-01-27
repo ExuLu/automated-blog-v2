@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllArticles } from '../api/articlesApi';
+import { getAllArticles } from '../services/articlesApi';
 
 import type { Article } from '../types/article';
 import type { ApiError } from '../types/error';

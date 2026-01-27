@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { generateAndAddArticle } from '../api/articlesApi';
+import { generateAndAddArticle } from '../services/articlesApi';
 
 import type { Article } from '../types/article';
 import type { ApiError } from '../types/error';
