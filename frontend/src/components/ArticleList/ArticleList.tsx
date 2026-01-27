@@ -12,16 +12,21 @@ const ArticleList = () => {
   if (isLoading) return <Spinner />;
   if (error) return <Error message={error.message} isMainPage={true} />;
 
+  const isEmpty = !articles || articles.length === 0;
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Automated Blog</h1>
       <GenerateArticleForm />
-      <div className={styles.list}>
-        {articles &&
-          articles.map((article) => (
+      {isEmpty ? (
+        <p className={styles.empty}>Start to generate new articles.</p>
+      ) : (
+        <div className={styles.list}>
+          {articles!.map((article) => (
             <ArticleListItem key={article.id} article={article} />
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
