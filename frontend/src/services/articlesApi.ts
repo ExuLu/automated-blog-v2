@@ -1,12 +1,12 @@
 import type { ApiFailure, ApiResponse } from '../types/api';
 import type { ArticlePayload, ArticlesPayload } from '../types/article';
-import type { ApiError } from '../types/error';
+import buildApiError from './buildApiError';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function request<T extends ApiResponse<unknown>>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const config: RequestInit = { ...options };
 
@@ -14,15 +14,33 @@ async function request<T extends ApiResponse<unknown>>(
     config.headers = { 'Content-Type': 'application/json' };
   }
 
-  const response = await fetch(`${API_URL}${path}`, config);
-  const parsed = (await response.json()) as unknown;
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, config);
+  } catch (err) {
+    throw buildApiError('Network error. Please try again.', undefined);
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = await response.json();
+  } catch (err) {
+    if (!response.ok) {
+      throw buildApiError(
+        response.statusText || 'Request failed',
+        response.status,
+      );
+    }
+    throw buildApiError('Malformed response from server', response.status);
+  }
 
   if (!response.ok) {
     const body = parsed as ApiFailure | undefined;
-    const message = body?.message || 'Something went wrong';
-    const error: ApiError = new Error(message);
-    error.status = response.status;
-    throw error;
+    const message =
+      typeof body?.message === 'string' && body.message.trim().length > 0
+        ? body.message
+        : response.statusText || 'Something went wrong';
+    throw buildApiError(message, response.status);
   }
 
   return parsed as T;
@@ -42,7 +60,7 @@ export async function generateAndAddArticle(topic: string) {
   const config = { method: 'POST', body: JSON.stringify({ topic }) };
   const result = await request<ApiResponse<ArticlePayload>>(
     `/articles/generate`,
-    config
+    config,
   );
   return result.data.article;
 }
