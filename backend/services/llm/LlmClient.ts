@@ -53,7 +53,8 @@ export default class LlmClient {
 
       return response;
     } catch (err) {
-      console.error(`OpenRouter request failed because of: ${String(err)}`);
+      console.error(`OpenRouter request failed because of:`);
+      console.error(err);
       throw new ApiError(ErrorCodes.llmRequestFailed);
     }
   }
@@ -70,7 +71,7 @@ export default class LlmClient {
 
     if (!response.ok) {
       const errorLog = isOpenRouterErrorResponse(data)
-        ? `OpenRouter request failed because of: ${String(data.error)}`
+        ? `OpenRouter request failed because of: ${data.error.message}`
         : `OpenRouter request failed with status ${response.status}`;
       console.error(errorLog);
 
